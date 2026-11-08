@@ -71,12 +71,12 @@ the DoD UAS Group and every engineering check. Same engine as the library and MC
 
 <div align="center">
 <img src="docs/assets/architecture_diagram.png" width="100%" alt="VALKYRIE Excalidraw Dark-Mode System Architecture">
-<br><em>Mission CONOPS & MCP client → VALKYRIE physics & sizing engine → validated design point</em>
+<br><em>Mission Lab, MCP server & CONOPS → VALKYRIE physics, sizing & simulation engine → validated design point & DoD checks (<a href="docs/assets/architecture_diagram.svg">SVG</a>)</em>
 </div>
 
-1. **Mission input**: payload, endurance and/or range (one-way or out-and-back), field elevation, cruise altitude, temperature, wind, stall speed; from Python or an LLM over MCP.
-2. **Physics engine**: constraint analysis (T/W vs W/S), parabolic drag polar, battery energy budget for climb, transit (with wind) and loiter, iterative weight closure.
-3. **Validated design point**: weight, wing, thrust, battery, DoD UAS Group and every failed check, or the physical reason the mission can't be flown.
+1. **Mission input & interfaces**: payload, endurance and/or range (one-way or `round_trip`), field elevation, cruise altitude, temperature (hot-and-high), wind (`max_wind_speed_ms`), and stall speed cap (`max_stall_speed_ms`); driven from Python, **Mission Lab** (`valkyrie-lab`), or an LLM over **MCP** (`valkyrie-mcp`).
+2. **Physics, sizing & simulation engine**: USSA-1976 geopotential atmosphere, parabolic drag polar ($C_D = C_{D0} + k C_L^2$), constraint analysis ($T/W$ vs. $W/S$ with stall/landing cap), wind-optimal battery energy budget (climb + transit out + loiter + transit back, UIUC-validated $\eta_p = 0.70$), iterative weight closure with runaway guards, and a 1 s time-stepping **MissionSimulator** with 0–360° vector wind.
+3. **Validated design point & military checks**: weight, wing area, thrust, battery mass, **DoD UAS Group (1–5)**, wind-penetration and structural/Reynolds checks, plus sourced COTS component lookup — or `feasible: false` with the physical reason the mission can't be flown.
 
 How each step works, with equations and sources: **[docs/theory.md](docs/theory.md)**.
 

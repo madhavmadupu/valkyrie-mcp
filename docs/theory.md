@@ -19,6 +19,10 @@ How VALKYRIE turns a mission into an aircraft, step by step. Every equation here
 
 ## 1. Workflow
 
+<div align="center">
+<img src="assets/architecture_diagram.png" width="100%" alt="VALKYRIE System Architecture">
+</div>
+
 ```
 MissionRequirements ──► ConstraintAnalyzer ──► (W/S, T/W) ──► SizingLoop ──► DesignPoint ──► DesignValidator
    payload, endurance,     T/W vs W/S             design point     W0, battery,      weight, wing,    DoD group,
@@ -98,6 +102,11 @@ $$
 with $V_{s,req}$ = `max_stall_speed_ms` (default 12 m/s) and $s_{land}$ = `landing_distance_m`, else $1.2\,s_{TO}$.
 
 **Design point:** sweep $W/S$ from 10 N/m² to $(W/S)_{max}$ (51 points). At each, required $T/W$ is the largest of the three constraints. Keep points with $T/W < 0.6$ and pick the **highest** $W/S$ (smallest wing). No feasible point raises `PhysicsViolationError`.
+
+<div align="center">
+<img src="assets/constraint_diagram_example.png" width="85%" alt="Constraint Analysis T/W vs W/S Diagram">
+<br><em>T/W vs. W/S constraint diagram for the 0.91 kg, 45-minute ISR mission: stall-limited wing loading at 123.5 N/m², T/W = 0.273, W₀ = 2.31 kg.</em>
+</div>
 
 ---
 
