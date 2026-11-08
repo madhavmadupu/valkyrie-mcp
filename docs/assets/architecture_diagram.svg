@@ -1,0 +1,292 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 920" width="100%" height="100%" style="background-color: #000000;">
+  <defs>
+    <!-- Hand-drawn Excalidraw wobble filter -->
+    <filter id="sketch" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="3" result="noise" seed="7" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+    <!-- Subtle glow for neon strokes on pure black -->
+    <filter id="glow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="2.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <!-- Excalidraw-style hand-drawn arrowheads -->
+    <marker id="arrow-blue" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 1 2 C 4 4, 8 5, 11 6 C 8 7, 4 8, 1 10" fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 1 2 C 4 4, 8 5, 11 6 C 8 7, 4 8, 1 10" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 1 2 C 4 4, 8 5, 11 6 C 8 7, 4 8, 1 10" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 1 2 C 4 4, 8 5, 11 6 C 8 7, 4 8, 1 10" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+
+    <!-- Excalidraw Hatching Patterns -->
+    <pattern id="hatch-blue" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#667eea" stroke-width="1" stroke-opacity="0.18" />
+    </pattern>
+    <pattern id="hatch-purple" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#a855f7" stroke-width="1" stroke-opacity="0.15" />
+    </pattern>
+    <pattern id="hatch-green" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#22c55e" stroke-width="1" stroke-opacity="0.18" />
+    </pattern>
+    <pattern id="hatch-amber" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#f59e0b" stroke-width="1" stroke-opacity="0.18" />
+    </pattern>
+    <pattern id="dot-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="0.8" fill="#27272a" />
+    </pattern>
+  </defs>
+
+  <style>
+    .font-sketch {
+      font-family: 'Virgil', 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+    }
+    .font-code {
+      font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+    }
+    .title { font-size: 24px; font-weight: bold; fill: #f8fafc; letter-spacing: 0.5px; }
+    .subtitle { font-size: 13px; fill: #94a3b8; }
+    .layer-tag { font-size: 12px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; }
+    .box-title { font-size: 17px; font-weight: bold; fill: #ffffff; }
+    .box-sub { font-size: 13px; fill: #cbd5e1; }
+    .code-label { font-size: 12px; fill: #e2e8f0; }
+    .edge-label { font-size: 12.5px; font-weight: bold; }
+  </style>
+
+  <!-- Pure Black Background with subtle Excalidraw dark grid -->
+  <rect width="1200" height="920" fill="#000000" />
+  <rect width="1200" height="920" fill="url(#dot-grid)" />
+
+  <!-- Diagram Header -->
+  <g transform="translate(600, 42)" text-anchor="middle">
+    <text y="0" class="font-sketch title">⚡ V.A.L.K.Y.R.I.E. — System Architecture</text>
+    <text y="24" class="font-sketch subtitle">Validated Aerospace Logic &amp; Kinetic Yield Reasoning Intelligence Engine (MCP Server &amp; Physics Core)</text>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- LAYER 1: USER INTERFACE / INPUT LAYER                                 -->
+  <!-- ===================================================================== -->
+  <g transform="translate(50, 88)">
+    <!-- Dashed Layer 1 Boundary -->
+    <rect x="0" y="0" width="800" height="145" rx="14" fill="#090a10" stroke="#3b4262" stroke-width="1.5" stroke-dasharray="8 6" filter="url(#sketch)" />
+    <text x="18" y="24" class="font-code layer-tag" fill="#818cf8">LAYER 1 // MISSION INPUT &amp; AI INTERFACE</text>
+
+    <!-- Box 1A: User / Mission Planner (CONOPS) -->
+    <g transform="translate(25, 36)">
+      <rect x="0" y="0" width="440" height="92" rx="10" fill="url(#hatch-blue)" stroke="#667eea" stroke-width="2.4" filter="url(#sketch)" />
+      <rect x="2" y="2" width="436" height="88" rx="9" fill="none" stroke="#667eea" stroke-width="0.9" stroke-opacity="0.6" />
+      <!-- Operator Icon -->
+      <circle cx="34" cy="34" r="11" fill="none" stroke="#818cf8" stroke-width="2" filter="url(#sketch)" />
+      <path d="M 18 66 C 18 50, 50 50, 50 66" fill="none" stroke="#818cf8" stroke-width="2" stroke-linecap="round" filter="url(#sketch)" />
+      <text x="65" y="28" class="font-sketch box-title" fill="#e0e7ff">User / Mission Planner (CONOPS)</text>
+      <text x="65" y="50" class="font-code code-label" fill="#a5b4fc">• Payload: 0.91 kg (2.0 lb EO/IR)   • Endurance: 45 min</text>
+      <text x="65" y="70" class="font-code code-label" fill="#a5b4fc">• Takeoff: 76 m (250 ft grass)      • Altitude:  300 m</text>
+    </g>
+
+    <!-- Bidirectional arrow between CONOPS & MCP Host -->
+    <path d="M 475 82 L 525 82" fill="none" stroke="#667eea" stroke-width="2.2" marker-end="url(#arrow-blue)" marker-start="url(#arrow-blue)" filter="url(#sketch)" />
+
+    <!-- Box 1B: AI Agent / MCP Host -->
+    <g transform="translate(535, 36)">
+      <rect x="0" y="0" width="240" height="92" rx="10" fill="url(#hatch-blue)" stroke="#667eea" stroke-width="2.4" filter="url(#sketch)" />
+      <text x="20" y="28" class="font-sketch box-title" fill="#e0e7ff">🤖 MCP Client / LLM</text>
+      <text x="20" y="50" class="font-sketch box-sub">Claude / Autonomous C2</text>
+      <text x="20" y="70" class="font-code code-label" fill="#93c5fd">15+ MCP Physics Tools</text>
+    </g>
+  </g>
+
+  <!-- Arrow Layer 1 -> Layer 2 -->
+  <g>
+    <path d="M 270 233 C 268 255, 272 268, 270 290" fill="none" stroke="#667eea" stroke-width="2.6" marker-end="url(#arrow-blue)" filter="url(#sketch)" />
+    <rect x="282" y="246" width="160" height="24" rx="5" fill="#000000" stroke="#667eea" stroke-width="1" />
+    <text x="292" y="263" class="font-sketch edge-label" fill="#818cf8">Mission Requirements</text>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- LAYER 2: VALKYRIE CORE ENGINE                                         -->
+  <!-- ===================================================================== -->
+  <g transform="translate(50, 295)">
+    <!-- Dashed Layer 2 Boundary -->
+    <rect x="0" y="0" width="800" height="365" rx="16" fill="#0b0714" stroke="#a855f7" stroke-width="2" stroke-dasharray="10 6" filter="url(#sketch)" />
+    <text x="18" y="25" class="font-code layer-tag" fill="#c084fc">LAYER 2 // VALKYRIE CORE PHYSICS &amp; SIZING ENGINE</text>
+
+    <!-- Box 2: Constraint Analyzer -->
+    <g transform="translate(25, 42)">
+      <rect x="0" y="0" width="245" height="150" rx="10" fill="url(#hatch-purple)" stroke="#a855f7" stroke-width="2.5" filter="url(#sketch)" />
+      <rect x="2" y="2" width="241" height="146" rx="9" fill="none" stroke="#a855f7" stroke-width="0.8" stroke-opacity="0.5" />
+      <text x="16" y="28" class="font-sketch box-title" fill="#f3e8ff">⚙️ Constraint Analyzer</text>
+      <text x="16" y="48" class="font-sketch box-sub" fill="#d8b4fe">T/W vs. W/S Design Space</text>
+      <line x1="16" y1="57" x2="228" y2="57" stroke="#a855f7" stroke-width="1" stroke-opacity="0.4" filter="url(#sketch)" />
+      <text x="16" y="76" class="font-code code-label">• Takeoff ground roll</text>
+      <text x="16" y="95" class="font-code code-label">• Rate of climb (dh/dt)</text>
+      <text x="16" y="114" class="font-code code-label">• Cruise &amp; stall bounds</text>
+      <text x="16" y="135" class="font-code code-label" fill="#e9d5ff">→ Feasible: (100 N/m², 0.30)</text>
+    </g>
+
+    <!-- Arrow Box 2 -> Box 3 -->
+    <path d="M 272 117 L 315 117" fill="none" stroke="#a855f7" stroke-width="2.5" marker-end="url(#arrow-purple)" filter="url(#sketch)" />
+
+    <!-- Box 3: Physics Engine (with 3 sub-boxes) -->
+    <g transform="translate(322, 42)">
+      <rect x="0" y="0" width="455" height="150" rx="10" fill="#120924" stroke="#a855f7" stroke-width="2.5" filter="url(#sketch)" />
+      <text x="16" y="26" class="font-sketch box-title" fill="#f3e8ff">⚛️ First-Principles Physics Engine</text>
+
+      <!-- Sub-box 3a: Aerodynamics -->
+      <g transform="translate(12, 38)">
+        <rect x="0" y="0" width="138" height="100" rx="8" fill="url(#hatch-purple)" stroke="#c084fc" stroke-width="1.8" filter="url(#sketch)" />
+        <text x="10" y="22" class="font-sketch" font-size="14" font-weight="bold" fill="#e9d5ff">Aerodynamics</text>
+        <text x="10" y="43" class="font-code" font-size="11" fill="#cbd5e1">CD = CD0 + k·CL²</text>
+        <text x="10" y="62" class="font-code" font-size="11" fill="#cbd5e1">Max L/D = 14.2</text>
+        <text x="10" y="81" class="font-code" font-size="11" fill="#cbd5e1">Stall V_s check</text>
+      </g>
+
+      <!-- Sub-box 3b: Propulsion -->
+      <g transform="translate(158, 38)">
+        <rect x="0" y="0" width="138" height="100" rx="8" fill="url(#hatch-purple)" stroke="#c084fc" stroke-width="1.8" filter="url(#sketch)" />
+        <text x="10" y="22" class="font-sketch" font-size="14" font-weight="bold" fill="#e9d5ff">Propulsion</text>
+        <text x="10" y="43" class="font-code" font-size="11" fill="#cbd5e1">Thrust Lapse:</text>
+        <text x="10" y="62" class="font-code" font-size="11" fill="#f0abfc">T(V) = ηp·P / V</text>
+        <text x="10" y="81" class="font-code" font-size="11" fill="#cbd5e1">Esb = 150 Wh/kg</text>
+      </g>
+
+      <!-- Sub-box 3c: Mission -->
+      <g transform="translate(304, 38)">
+        <rect x="0" y="0" width="138" height="100" rx="8" fill="url(#hatch-purple)" stroke="#c084fc" stroke-width="1.8" filter="url(#sketch)" />
+        <text x="10" y="22" class="font-sketch" font-size="14" font-weight="bold" fill="#e9d5ff">Mission</text>
+        <text x="10" y="43" class="font-code" font-size="11" fill="#cbd5e1">Battery Fraction:</text>
+        <text x="10" y="62" class="font-code" font-size="11" fill="#f0abfc">BMF = E·V·g / ...</text>
+        <text x="10" y="81" class="font-code" font-size="11" fill="#cbd5e1">Segment Energy</text>
+      </g>
+    </g>
+
+    <!-- Arrow from Physics Engine down to Sizing Loop -->
+    <path d="M 550 192 C 550 208, 450 212, 450 226" fill="none" stroke="#a855f7" stroke-width="2.5" marker-end="url(#arrow-purple)" filter="url(#sketch)" />
+
+    <!-- Box 4: Sizing Loop -->
+    <g transform="translate(115, 230)">
+      <rect x="0" y="0" width="570" height="115" rx="10" fill="url(#hatch-purple)" stroke="#a855f7" stroke-width="2.5" filter="url(#sketch)" />
+      <rect x="2" y="2" width="566" height="111" rx="9" fill="none" stroke="#a855f7" stroke-width="0.8" stroke-opacity="0.5" />
+      <text x="20" y="28" class="font-sketch box-title" fill="#f3e8ff">🔄 Iterative Sizing Loop (MTOW Convergence)</text>
+      <rect x="20" y="40" width="320" height="32" rx="6" fill="#090514" stroke="#c084fc" stroke-width="1.4" filter="url(#sketch)" />
+      <text x="32" y="61" class="font-code" font-size="13.5" font-weight="bold" fill="#f0abfc">W₀ = W_payload / (1 - We/W₀ - BMF)</text>
+      <text x="20" y="94" class="font-code code-label" fill="#d8b4fe">1. Guess W₀  →  2. Eval We/W₀ &amp; BMF  →  3. Update W₀  →  4. Converge (5–10 iters)</text>
+
+      <!-- Feedback loop doodle inside Sizing Loop -->
+      <path d="M 480 42 C 535 42, 535 80, 480 80 C 435 80, 435 42, 470 42" fill="none" stroke="#e879f9" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow-purple)" filter="url(#sketch)" />
+      <text x="485" y="65" text-anchor="middle" class="font-sketch" font-size="12" fill="#f5d0fe">ΔW₀ &lt; ε</text>
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- SIDE PANEL: DATA STORES (Right Column)                                -->
+  <!-- ===================================================================== -->
+  <g transform="translate(905, 295)">
+    <rect x="0" y="0" width="250" height="365" rx="16" fill="#0c0a06" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="8 6" filter="url(#sketch)" />
+    <text x="18" y="25" class="font-code layer-tag" fill="#fbbf24">DATA STORES // COTS &amp; REGRESSION</text>
+
+    <!-- Database Cylinder 1: Component Database -->
+    <g transform="translate(22, 48)">
+      <path d="M 0 18 L 0 115 C 0 128, 206 128, 206 115 L 206 18" fill="url(#hatch-amber)" stroke="#f59e0b" stroke-width="2.2" filter="url(#sketch)" />
+      <ellipse cx="103" cy="18" rx="103" ry="14" fill="#1c1406" stroke="#f59e0b" stroke-width="2.2" filter="url(#sketch)" />
+      <text x="103" y="48" text-anchor="middle" class="font-sketch box-title" fill="#fef3c7">🗄️ Component DB</text>
+      <text x="22" y="70" class="font-code code-label" fill="#fde68a">• Brushless Motors (Kv, R)</text>
+      <text x="22" y="90" class="font-code code-label" fill="#fde68a">• LiPo / Li-Ion Packs</text>
+      <text x="22" y="110" class="font-code code-label" fill="#fde68a">• APC / Aero Propellers</text>
+    </g>
+
+    <!-- Database Cylinder 2: Historical Data -->
+    <g transform="translate(22, 208)">
+      <path d="M 0 18 L 0 115 C 0 128, 206 128, 206 115 L 206 18" fill="url(#hatch-amber)" stroke="#f59e0b" stroke-width="2.2" filter="url(#sketch)" />
+      <ellipse cx="103" cy="18" rx="103" ry="14" fill="#1c1406" stroke="#f59e0b" stroke-width="2.2" filter="url(#sketch)" />
+      <text x="103" y="48" text-anchor="middle" class="font-sketch box-title" fill="#fef3c7">📊 Historical Data</text>
+      <text x="22" y="70" class="font-code code-label" fill="#fde68a">• Empty Weight (We/W₀)</text>
+      <text x="22" y="90" class="font-code code-label" fill="#fde68a">• Reference UAV Fleet</text>
+      <text x="22" y="110" class="font-code code-label" fill="#fde68a">• Raymer Regressions</text>
+    </g>
+  </g>
+
+  <!-- Dotted Lookup Arrows from Data Stores to Layer 2 -->
+  <g>
+    <!-- Component DB -> Physics Engine -->
+    <path d="M 925 410 C 880 410, 865 410, 832 410" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#arrow-amber)" filter="url(#sketch)" />
+    <text x="878" y="398" text-anchor="middle" class="font-sketch" font-size="11.5" fill="#fbbf24">Specs Lookup</text>
+
+    <!-- Historical Data -> Sizing Loop -->
+    <path d="M 925 575 C 845 575, 750 580, 690 580" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#arrow-amber)" filter="url(#sketch)" />
+    <text x="815" y="566" text-anchor="middle" class="font-sketch" font-size="11.5" fill="#fbbf24">We/W₀ Regression</text>
+  </g>
+
+  <!-- Arrow Layer 2 -> Layer 3 -->
+  <g>
+    <path d="M 450 660 L 450 715" fill="none" stroke="#22c55e" stroke-width="2.8" marker-end="url(#arrow-green)" filter="url(#sketch)" />
+    <rect x="464" y="673" width="142" height="24" rx="5" fill="#000000" stroke="#22c55e" stroke-width="1" />
+    <text x="474" y="690" class="font-sketch edge-label" fill="#4ade80">Converged Solution</text>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- LAYER 3: OUTPUT / VALIDATION LAYER                                    -->
+  <!-- ===================================================================== -->
+  <g transform="translate(50, 720)">
+    <!-- Dashed Layer 3 Boundary -->
+    <rect x="0" y="0" width="800" height="150" rx="16" fill="#05100a" stroke="#22c55e" stroke-width="2" stroke-dasharray="8 6" filter="url(#sketch)" />
+    <text x="18" y="24" class="font-code layer-tag" fill="#4ade80">LAYER 3 // PHYSICS-VALIDATED OUTPUT &amp; HARDWARE SYNTHESIS</text>
+
+    <!-- Box 5: Validated Design Point -->
+    <g transform="translate(25, 36)">
+      <rect x="0" y="0" width="445" height="96" rx="10" fill="url(#hatch-green)" stroke="#22c55e" stroke-width="2.5" filter="url(#sketch)" />
+      <text x="18" y="26" class="font-sketch box-title" fill="#dcfce7">✅ Validated Design Point</text>
+      <!-- 4 output pills -->
+      <rect x="16" y="38" width="198" height="22" rx="5" fill="#052e16" stroke="#4ade80" stroke-width="1.2" />
+      <text x="26" y="53" class="font-code" font-size="11.5" fill="#bbf7d0">Gross Weight: 6.82 kg ✓</text>
+
+      <rect x="228" y="38" width="198" height="22" rx="5" fill="#052e16" stroke="#4ade80" stroke-width="1.2" />
+      <text x="238" y="53" class="font-code" font-size="11.5" fill="#bbf7d0">Wing Area: 0.38 m² ✓</text>
+
+      <rect x="16" y="66" width="198" height="22" rx="5" fill="#052e16" stroke="#4ade80" stroke-width="1.2" />
+      <text x="26" y="81" class="font-code" font-size="11.5" fill="#bbf7d0">Battery: 2.15 kg (31%) ✓</text>
+
+      <rect x="228" y="66" width="198" height="22" rx="5" fill="#052e16" stroke="#4ade80" stroke-width="1.2" />
+      <text x="238" y="81" class="font-code" font-size="11.5" fill="#bbf7d0">Thrust Req: 23.4 N ✓</text>
+    </g>
+
+    <!-- Arrow Box 5 -> Box 6 -->
+    <path d="M 475 84 L 525 84" fill="none" stroke="#22c55e" stroke-width="2.5" marker-end="url(#arrow-green)" filter="url(#sketch)" />
+
+    <!-- Box 6: Component Selection / CAD -->
+    <g transform="translate(532, 36)">
+      <rect x="0" y="0" width="245" height="96" rx="10" fill="url(#hatch-green)" stroke="#22c55e" stroke-width="2.5" filter="url(#sketch)" />
+      <text x="18" y="26" class="font-sketch box-title" fill="#dcfce7">🧊 Ready for Build / CAD</text>
+      <text x="18" y="48" class="font-code code-label" fill="#bbf7d0">• Motor &amp; Prop Selection</text>
+      <text x="18" y="67" class="font-code code-label" fill="#bbf7d0">• 6S LiPo Pack Sizing</text>
+      <text x="18" y="86" class="font-code code-label" fill="#bbf7d0">• Airframe Geometry &amp; Test</text>
+    </g>
+  </g>
+
+  <!-- ===================================================================== -->
+  <!-- LEGEND / KEY (Bottom Right Corner)                                    -->
+  <!-- ===================================================================== -->
+  <g transform="translate(905, 720)">
+    <rect x="0" y="0" width="250" height="150" rx="12" fill="#09090b" stroke="#52525b" stroke-width="1.8" filter="url(#sketch)" />
+    <text x="18" y="25" class="font-sketch" font-size="14" font-weight="bold" fill="#e4e4e7">Legend / Key</text>
+
+    <rect x="18" y="38" width="14" height="14" rx="3" fill="url(#hatch-blue)" stroke="#667eea" stroke-width="2" />
+    <text x="42" y="50" class="font-sketch" font-size="12.5" fill="#cbd5e1">Input / Mission CONOPS</text>
+
+    <rect x="18" y="62" width="14" height="14" rx="3" fill="url(#hatch-purple)" stroke="#a855f7" stroke-width="2" />
+    <text x="42" y="74" class="font-sketch" font-size="12.5" fill="#cbd5e1">Core Physics &amp; Sizing</text>
+
+    <rect x="18" y="86" width="14" height="14" rx="3" fill="url(#hatch-green)" stroke="#22c55e" stroke-width="2" />
+    <text x="42" y="98" class="font-sketch" font-size="12.5" fill="#cbd5e1">Validated Output / CAD</text>
+
+    <rect x="18" y="110" width="14" height="14" rx="3" fill="url(#hatch-amber)" stroke="#f59e0b" stroke-width="2" />
+    <text x="42" y="122" class="font-sketch" font-size="12.5" fill="#cbd5e1">Data Stores ( Dotted = Lookup )</text>
+  </g>
+</svg>

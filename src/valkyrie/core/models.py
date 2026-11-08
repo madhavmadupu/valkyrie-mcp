@@ -228,20 +228,21 @@ class AircraftDesign(BaseModel):
     propulsion: PropulsionConfig
     weights: WeightBreakdown
 
-    class Config:
-        """Pydantic configuration."""
-
-        json_schema_extra = {
-            "example": {
-                "name": "Tactical Field UAV",
-                "mission": {
-                    "payload_mass_kg": 0.91,
-                    "endurance_hours": 0.75,
-                    "takeoff_distance_m": 76,
-                    "cruise_altitude_m": 300,
-                },
-            }
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "name": "Tactical Field UAV",
+                    "mission": {
+                        "payload_mass_kg": 0.91,
+                        "endurance_hours": 0.75,
+                        "takeoff_distance_m": 76,
+                        "cruise_altitude_m": 300,
+                    },
+                }
+            ]
         }
+    }
 
 
 class ComponentSpecs(BaseModel):

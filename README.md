@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/assets/valkyrie_hero_banner.png" width="100%" alt="VALKYRIE Hero Banner — Validated Aerospace Logic & Kinetic Yield Reasoning Intelligence Engine">
+
 # ⚡ V.A.L.K.Y.R.I.E.
 
 **Validated Aerospace Logic & Kinetic Yield Reasoning Intelligence Engine**
@@ -12,7 +14,7 @@
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 [![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](http://mypy-lang.org/)
 
-[Quick Start](#-quick-start) • [Documentation](#-documentation) • [Examples](#-examples) • [Theory](#-the-physics) • [Roadmap](#-roadmap)
+[Quick Start](#-quick-start) • [Architecture](#️-system-architecture) • [Documentation](#-documentation) • [Examples](#-examples) • [Theory](#-the-physics) • [Roadmap](#-roadmap)
 
 </div>
 
@@ -69,6 +71,26 @@ In hobbyist prototyping, trial-and-error is acceptable. **In defense tech, auton
 │  ✅ VALIDATED - Mission Physically Achievable               │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 🏗️ System Architecture
+
+<div align="center">
+<img src="docs/assets/architecture_diagram.png" width="100%" alt="VALKYRIE Excalidraw Dark-Mode System Architecture">
+<br><em>Excalidraw-style 3-layer system architecture: Mission CONOPS & MCP Client → VALKYRIE Core Physics & Sizing Engine → Validated Design Point</em>
+</div>
+
+> 📐 **High-Resolution Vector Diagram:** Also available as a scalable dark-mode SVG at [`docs/assets/architecture_diagram.svg`](docs/assets/architecture_diagram.svg).
+
+### Architecture Layers
+
+1. **Layer 1 — Mission Input & AI Interface (`CONOPS` / `MCP Client`)**: Accepts tactical mission parameters (payload mass, endurance, takeoff ground roll, cruise altitude) directly from Python or an LLM agent via the Model Context Protocol (MCP).
+2. **Layer 2 — VALKYRIE Core Physics Engine**:
+   - **Constraint Analyzer**: Solves simultaneous point-performance inequalities ($T/W$ vs. $W/S$) across takeoff, climb, cruise, and stall limits.
+   - **First-Principles Physics Engine**: Couples parabolic drag polar aerodynamics ($C_D = C_{D,0} + k C_L^2$), dynamic propeller thrust lapse ($T(V) = \eta_p P / V$), and electric battery mass fractions ($BMF$).
+   - **Iterative Sizing Loop**: Converges Gross Takeoff Weight ($W_0$) against historical empty-weight regressions ($W_e/W_0$) and COTS component databases.
+3. **Layer 3 — Validated Design Point & Hardware Synthesis**: Outputs a converged, physically realizable aircraft configuration ready for COTS motor/battery/propeller matching and CAD geometry generation.
 
 ### What Makes VALKYRIE Different
 
