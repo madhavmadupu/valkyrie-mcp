@@ -190,8 +190,18 @@ Tests prove the code is self-consistent; validation checks it against **outside 
 | Propeller efficiency 0.70 | UIUC wind tunnel, APC 11–16 in props | measured peaks 0.68–0.79 |
 | Battery energy budget | Independent time-stepping simulator | within 0.11% on 4 missions |
 | "Along-track wind is worst case" | Simulator, 0–180° wind sweep | confirmed |
+| **Cruise power, real aircraft** | **346 public PX4 flight logs → 32 usable flights, 9 Albatross UAVs** | **measured / predicted median 1.18** |
+| **Endurance from battery energy** | **Penguin BE datasheet (640 Wh, 2.8 kg payload)** | **within 3–6% of the published 110 min** |
+| CLmax default 1.4 | Penguin BE datasheet | published 1.3 clean, 1.7 flapped |
+| Empty-weight fraction 0.50 | Albatross, Penguin BE datasheets | 0.44, 0.49 (default not optimistic) |
+| Whole sizing from payload + endurance | Penguin BE, Skylark I-LEX datasheets | −40%, +34%: a first estimate |
 
-Validation changed the model: the propeller efficiency default dropped from 0.80 to 0.70 after the UIUC data, and climb energy was added after the simulator exposed it. **Not yet validated:** end-to-end endurance against a real flight log (we need one, see [CONTRIBUTING.md](CONTRIBUTING.md)).
+<div align="center">
+<img src="docs/assets/validation/albatross_flights.png" width="80%" alt="Measured battery power vs airspeed from 32 real Albatross flights against VALKYRIE's predicted band">
+<br><em>Real flights vs VALKYRIE: battery power in steady level flight from public PX4 logs, against the prediction from published geometry and default assumptions (nothing fitted).</em>
+</div>
+
+Validation changed the model: propeller efficiency dropped from 0.80 to 0.70 after the UIUC data, climb energy was added after the simulator exposed it, and the parts database was rebuilt from manufacturer pages. On real Albatross flights the defaults under-predict cruise power by a median 18%, which is in line with avionics and payload drawing from the same battery. The datasets are in [`validation/data/`](validation/data/), every row traceable to a public log, a datasheet or a Wikipedia revision. **Still missing:** a flight log of a *weighed* aircraft ([CONTRIBUTING.md](CONTRIBUTING.md)).
 
 ---
 

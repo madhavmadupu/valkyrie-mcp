@@ -153,7 +153,7 @@ $$
 \text{BMF} = \text{BMF}_{climb} + \text{BMF}_{range,out} + \text{BMF}_{loiter} + \text{BMF}_{range,back}
 $$
 
-*Validated:* matches the independent time-stepping simulator within 0.11% ([validation §5](validation.md#5-closed-form-budget-vs-simulation)). Traub flew a model aircraft in a wind tunnel and found battery-energy endurance estimates within 3% of measured [R5].
+*Validated:* matches the independent time-stepping simulator within 0.11% ([validation §5](validation.md#5-closed-form-budget-vs-simulation)). Predicts the Penguin BE's published 110 min endurance from its 640 Wh battery within 3–6% [R22], and real Albatross cruise power at a median 1.18× measured/predicted over 32 public PX4 flights ([validation §6–7](validation.md#6-cruise-power-vs-real-flight-logs-applied-aeronautics-albatross)). Traub flew a model aircraft in a wind tunnel and found battery-energy endurance estimates within 3% of measured [R5].
 
 ---
 

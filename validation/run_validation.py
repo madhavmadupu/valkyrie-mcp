@@ -228,6 +228,19 @@ ALB_SPAN, ALB_AREA, ALB_MASS = 3.0, 0.684, (6.5, 8.25, 10.0)
 ETA_TOTAL = PROPELLER_EFFICIENCY_TYPICAL * 0.85 * 0.95
 
 
+REJECTION_LABELS = {
+    "under 5 min airborne": "bench or ground log (under 5 min airborne)",
+    "no airspeed data (flown without a working airspeed sensor)": "flown without a working airspeed sensor",
+    "missing battery_status.voltage_filtered_v": "no battery sensor logged",
+    "no steady straight-and-level windows": "no 20 s of steady straight-and-level flight",
+    "current sensor not working": "current sensor reads zero or constant",
+    "missing airspeed_validated.true_airspeed_m_s": "no airspeed topic",
+    "missing vehicle_air_data.rho": "no air-data topic",
+    "missing vehicle_land_detected.landed": "no land-detector topic",
+    "error": "corrupt or truncated log",
+}
+
+
 def albatross_power(v, rho, mass_kg, cd0=DEFAULT_CD0, e=DEFAULT_E):
     """VALKYRIE's level-flight battery power for the Albatross: (D·V)/η with the parabolic polar."""
     w = mass_kg * 9.80665
@@ -342,8 +355,9 @@ def write_report(atm, x8, buildup, props, sim, logs, sheets) -> None:
         "Do not edit by hand; rerun the script._",
         "",
         "VALKYRIE's tests check that the code is internally consistent. This page checks it against "
-        "**outside evidence**: published standards, wind-tunnel data, an independent design tool and an "
-        "independent simulation. Each study says what it validates and what it does not.",
+        "**outside evidence**: published standards, wind-tunnel data, real flight logs, manufacturer datasheets, "
+        "an independent design tool and an independent simulation. Each study says what it validates and what it "
+        "does not.",
         "",
         "## Summary",
         "",
@@ -471,8 +485,11 @@ def write_report(atm, x8, buildup, props, sim, logs, sheets) -> None:
         "",
         "Why measured power can exceed the prediction even with right aerodynamics: the battery also feeds the "
         "autopilot, radios and payload (cameras, gimbals), payload pods add drag, the true mass of each flight "
-        "is unknown, and hobby current sensors are often uncalibrated. Rows rejected and why: "
-        + ", ".join(f"{k} {v}" for k, v in sorted(logs["scan"]["status"].items(), key=lambda kv: -kv[1])) + ".",
+        "is unknown, and hobby current sensors are often uncalibrated.",
+        "",
+        "Logs rejected, and why: "
+        + "; ".join(f"{REJECTION_LABELS.get(k, k)} {v}" for k, v in
+                    sorted(logs["scan"]["status"].items(), key=lambda kv: -kv[1]) if k != "ok") + ".",
         "",
         "## 7. Manufacturer datasheets",
         "",

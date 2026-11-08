@@ -57,3 +57,9 @@ Numbered as cited in [theory.md](theory.md) and the code docstrings.
 
 - **[R15]** U.S. Air Force. "RQ-11B Raven" fact sheet. [af.mil](https://www.af.mil/News/Article-Display/Article/104533/rq-11b-raven).
   Used only for the 1.37 m span in the AeroSandbox check (validation §3).
+- **[R22]** UAV Factory. "Penguin BE Electric Unmanned Platform" datasheet v1.1. [PDF](https://www.unmannedsystemstechnology.com/wp-content/uploads/2014/11/Penguin-BE-Datasheet.pdf).
+  MTOW 21.5 kg; empty weight 14.9 kg with battery cartridge and standard landing gear; span 3.3 m; wing area 0.79 m²; 640 Wh LiPo; 110 min with 2.8 kg payload (belly landing); cruise 22 m/s; CLmax 1.3 clean, 1.7 with 45° flaps. Used in validation §7.
+- **[R23]** Elbit Systems. "Skylark I-LEX" product page. [elbitsystems.com](https://elbitsystems.com/unmanned/aerial/tactical-uas/skylark-i-lex).
+  Take-off weight 7.5 kg, max payload 1.2 kg, endurance 3 h, electric. Used in validation §7.
+
+All manufacturer figures are also collected, with what each weight includes, in `validation/data/uav_datasheets.csv`.

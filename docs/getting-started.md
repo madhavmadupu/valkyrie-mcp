@@ -249,4 +249,14 @@ ruff check src tests && mypy src --strict
 python validation/run_validation.py      # needs .[validation]; regenerates docs/validation.md + figures
 ```
 
-`tests/validation/` checks the model against the U.S. Standard Atmosphere 1976, the Skywalker X8's measured aerodynamics, UIUC propeller data and the independent simulator, with no extra dependencies, so it runs in CI. `validation/run_validation.py` adds AeroSandbox and live UIUC downloads and writes the report: [validation.md](validation.md).
+`tests/validation/` checks the model against the U.S. Standard Atmosphere 1976, the Skywalker X8's measured aerodynamics, UIUC propeller data and the independent simulator, and checks the committed real-world datasets for provenance, with no extra dependencies, so it runs in CI. `validation/run_validation.py` adds AeroSandbox, live UIUC downloads, the real-flight and datasheet studies, and writes the report: [validation.md](validation.md).
+
+The real-world datasets in `validation/data/` are committed, so the report regenerates without downloading anything. To rebuild them from the source:
+
+```bash
+python validation/flightlogs.py fetch --airframe 2106 --workers 12   # PX4 Flight Review logs, ~50 GB streamed, ~1 h
+python validation/flightlogs.py build                                # -> validation/data/albatross_*.csv
+python validation/uav_database.py                                    # Wikipedia infobox crawl (reference only)
+```
+
+What each dataset holds and how rows are filtered: [validation/README.md](../validation/README.md).

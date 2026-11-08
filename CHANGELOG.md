@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   logs of the Applied Aeronautics Albatross fleet (`validation/flightlogs.py`), manufacturer datasheets
   (Penguin BE, Albatross, Skylark I-LEX, Skywalker X8), and a Wikipedia UAV infobox crawl
   (`validation/uav_database.py`, reference only); validation report sections 6 and 7
+- Flight-log download is resilient: 120 s socket timeout, 3 retries, `.part` file renamed on success
 
 ### Changed
 - Range missions now default to a 10 m/s headwind (`max_wind_speed_ms` default); set it to 0 for still-air numbers

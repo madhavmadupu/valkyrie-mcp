@@ -122,6 +122,22 @@ def extract(path: pathlib.Path) -> dict:
     }
 
 
+def _download(url: str, dest: pathlib.Path, attempts: int = 3) -> None:
+    """Stream to dest.part with a socket timeout; rename only when complete, so no half file survives."""
+    part = dest.with_suffix(".part")
+    for attempt in range(attempts):
+        try:
+            with urllib.request.urlopen(url, timeout=120) as r, open(part, "wb") as fh:  # noqa: S310
+                while chunk := r.read(1 << 20):
+                    fh.write(chunk)
+            part.replace(dest)
+            return
+        except OSError:
+            part.unlink(missing_ok=True)
+            if attempt == attempts - 1:
+                raise
+
+
 def _fetch_one(entry: dict) -> tuple[str, str]:
     log_id = entry["log_id"]
     out = CACHE / "extracted" / f"{log_id}.json"
@@ -134,7 +150,7 @@ def _fetch_one(entry: dict) -> tuple[str, str]:
     ulg.parent.mkdir(parents=True, exist_ok=True)
     try:
         if not ulg.exists():
-            urllib.request.urlretrieve(url, ulg)  # noqa: S310
+            _download(url, ulg)
         result = extract(ulg)
     except Exception as e:  # corrupt or truncated logs are common in the wild
         result = {"status": f"error: {type(e).__name__}"}

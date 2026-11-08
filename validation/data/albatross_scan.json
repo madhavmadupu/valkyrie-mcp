@@ -1,11 +1,14 @@
 {
- "logs_scanned": 147,
+ "logs_scanned": 346,
  "status": {
-  "missing battery_status.voltage_filtered_v": 25,
-  "no steady straight-and-level windows": 47,
-  "current sensor not working": 38,
+  "under 5 min airborne": 70,
+  "no airspeed data (flown without a working airspeed sensor)": 66,
+  "missing battery_status.voltage_filtered_v": 61,
+  "no steady straight-and-level windows": 60,
+  "current sensor not working": 44,
   "ok": 32,
-  "missing vehicle_air_data.rho": 2,
+  "missing vehicle_air_data.rho": 5,
+  "missing airspeed_validated.true_airspeed_m_s": 5,
   "missing vehicle_land_detected.landed": 1,
   "error": 2
  }
