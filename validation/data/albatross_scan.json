@@ -1,0 +1,12 @@
+{
+ "logs_scanned": 147,
+ "status": {
+  "missing battery_status.voltage_filtered_v": 25,
+  "no steady straight-and-level windows": 47,
+  "current sensor not working": 38,
+  "ok": 32,
+  "missing vehicle_air_data.rho": 2,
+  "missing vehicle_land_detected.landed": 1,
+  "error": 2
+ }
+}

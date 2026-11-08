@@ -43,6 +43,16 @@ Numbered as cited in [theory.md](theory.md) and the code docstrings.
 - **[R11]** Congressional Research Service. "Defense Primer: Categories of Uncrewed Aircraft Systems." IF12797, 2024. [everycrsreport.com/reports/IF12797.html](https://www.everycrsreport.com/reports/IF12797.html).
 - **[R12]** U.S. Department of Defense. Joint UAS CONOPS group table, as presented in congressional testimony (Weatherington, 23 Mar 2010), [oversight.house.gov](https://oversight.house.gov/wp-content/uploads/2012/01/20100323Weatherington.pdf); see also Joint Publication 3-30.
 
+## Real-world datasets
+
+- **[R16]** PX4 Flight Review, public flight-log database. [review.px4.io](https://review.px4.io); index at `review.px4.io/dbinfo`, logs at `cdn.logs.px4.io`.
+  Fixed-wing logs for airframe 2106 (Applied Aeronautics Albatross, see [PX4 airframe reference](https://docs.px4.io/main/en/airframes/airframe_reference.html)); VALKYRIE keeps only derived steady-flight windows, each tagged with its public log id (`validation/data/albatross_*.csv`).
+- **[R18]** Applied Aeronautics. "The Albatross UAV" datasheet (2018): MTOW 10 kg, dry weight 4.4 kg, span 3 m, fuselage 740 × 200 × 150 mm, cruise 60–72 km/h. [PDF](https://www.unmannedsystemstechnology.com/wp-content/uploads/2018/11/Albatross-UAV-Datasheet.pdf).
+- **[R19]** Martin, J. "Introducing the Albatross UAV project." DIY Drones, 19 Nov 2013. [diydrones.com](https://diydrones.com/profiles/blogs/introducing-the-albatross-uav-project).
+  Design spec: 3000 mm span, 68.38 dm² wing area, AR 13.2, root/tip chord 300/160 mm, 740 mm fuselage (matches [R18]).
+- **[R20]** Wikipedia, aircraft specification infoboxes (`{{Aircraft specs}}`) of articles in its UAV categories, CC BY-SA 4.0. Every row of `validation/data/uav_specs.csv` records its article URL and revision id.
+- **[R21]** Component manufacturers: T-Motor product pages ([store.tmotor.com](https://store.tmotor.com)), Tattu/Gens Ace ([genstattu.com](https://genstattu.com)), APC Propellers ([apcprop.com](https://www.apcprop.com)), Molicel INR21700-P42A datasheet. Each entry in `components/database.py` links its page.
+
 ## Aircraft specifications
 
 - **[R15]** U.S. Air Force. "RQ-11B Raven" fact sheet. [af.mil](https://www.af.mil/News/Article-Display/Article/104533/rq-11b-raven).

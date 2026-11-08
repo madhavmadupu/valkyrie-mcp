@@ -65,12 +65,13 @@ def size_uav(
         analyzer = ConstraintAnalyzer(mission, battery_specific_energy_whkg=battery_wh_per_kg)
         design = analyzer.solve()
     except VALKYRIEError as e:
-        return {"feasible": False, "reason": str(e)}
+        return {"feasible": False, "reason": str(e), "mission": mission.model_dump(mode="json")}
 
     validator = DesignValidator(mission, design)
     checks = validator.validate_all()
     return {
         "feasible": not validator.has_errors(),
+        "mission": mission.model_dump(mode="json"),
         "design": design.model_dump(),
         "dod_uas_group": validator.uas_group(),
         "cruise_speed_ms": validator.cruise_speed_ms(),

@@ -1,49 +1,57 @@
-"""Component database for COTS motors, batteries, and propellers."""
+"""
+COTS components for small electric fixed-wing UAVs (about 1-15 kg).
+
+Every entry cites where its numbers come from: the manufacturer's product page or
+datasheet (motors, batteries, propeller masses) and the UIUC Propeller Data Site for
+measured propeller efficiency. Prices and stock are deliberately not tracked.
+"""
 
 from dataclasses import dataclass
+
+TMOTOR = "https://store.tmotor.com/product/"
+APC = "https://www.apcprop.com/product/"
+UIUC = "https://m-selig.ae.illinois.edu/props/"
 
 
 @dataclass
 class Motor:
-    """Electric brushless motor specifications."""
+    """Brushless outrunner. Power and current are the manufacturer's 180 s peak ratings."""
 
     manufacturer: str
     model: str
     kv: int  # RPM/V
-    max_voltage: float  # Volts
-    max_current: float  # Amps
-    max_power_w: float  # Watts
+    max_voltage: float  # V, highest rated cell count x 4.2 V
+    max_current: float | None  # A, peak (180 s), if published
+    max_power_w: float  # W, peak (180 s)
     mass_kg: float
-    resistance_ohm: float = 0.05  # Typical winding resistance
-
-    @property
-    def max_thrust_estimate_n(self) -> float:
-        """Rough static thrust estimate (very approximate)."""
-        # Rule of thumb: ~200W per N of thrust for small props
-        return self.max_power_w / 200.0
+    resistance_ohm: float | None  # winding resistance, if published
+    source: str = ""
+    note: str = ""
 
 
 @dataclass
 class Battery:
-    """LiPo/Li-Ion battery pack specifications."""
+    """LiPo or Li-ion pack."""
 
     manufacturer: str
     model: str
-    chemistry: str  # "LiPo", "Li-Ion", "LiFePO4"
-    voltage_nominal: float  # Volts
-    capacity_mah: float  # mAh
+    chemistry: str  # "LiPo", "Li-ion"
+    voltage_nominal: float  # V
+    capacity_mah: float
     mass_kg: float
-    max_discharge_c: float  # C-rating
-    cells_series: int  # S count (3S, 4S, 6S, etc.)
+    max_discharge_c: float  # continuous C rating
+    cells_series: int
+    source: str = ""
+    note: str = ""
 
     @property
     def energy_wh(self) -> float:
-        """Total energy capacity in Wh."""
+        """Nominal energy in Wh."""
         return (self.voltage_nominal * self.capacity_mah) / 1000.0
 
     @property
     def specific_energy_whkg(self) -> float:
-        """Specific energy in Wh/kg."""
+        """Pack specific energy in Wh/kg."""
         return self.energy_wh / self.mass_kg
 
     @property
@@ -54,7 +62,7 @@ class Battery:
 
 @dataclass
 class Propeller:
-    """Propeller specifications."""
+    """Fixed-pitch propeller; peak_efficiency is wind-tunnel measured where available."""
 
     manufacturer: str
     model: str
@@ -62,7 +70,9 @@ class Propeller:
     pitch_inch: float
     blades: int
     mass_kg: float
-    material: str = "carbon_fiber"  # "carbon_fiber", "plastic", "wood"
+    material: str = "plastic"
+    peak_efficiency: float | None = None  # measured η_max (UIUC), None if not tested
+    source: str = ""
 
     @property
     def diameter_m(self) -> float:
@@ -75,101 +85,48 @@ class Propeller:
         return self.pitch_inch * 0.0254
 
 
-# Real COTS component database
+def _tm(model: str, kv: int, cells: int, amps: float, watts: float, grams: float, mohm: float | None,
+        page: str, note: str = "") -> Motor:
+    return Motor("T-Motor", f"{model} KV{kv}", kv, cells * 4.2, amps, watts, grams / 1000,
+                 mohm / 1000 if mohm else None, TMOTOR + page, note)
+
+
+# Manufacturer product pages, retrieved 2026-11-08.
 MOTORS = [
-    Motor(
-        manufacturer="T-Motor",
-        model="F60 PRO IV 1750KV",
-        kv=1750,
-        max_voltage=25.2,  # 6S
-        max_current=45.0,
-        max_power_w=1100,
-        mass_kg=0.069,
-        resistance_ohm=0.054,
-    ),
-    Motor(
-        manufacturer="T-Motor",
-        model="F40 PRO II 2400KV",
-        kv=2400,
-        max_voltage=14.8,  # 4S
-        max_current=35.0,
-        max_power_w=500,
-        mass_kg=0.030,
-        resistance_ohm=0.080,
-    ),
-    Motor(
-        manufacturer="Turnigy",
-        model="D2826-10 1400KV",
-        kv=1400,
-        max_voltage=11.1,  # 3S
-        max_current=12.0,
-        max_power_w=130,
-        mass_kg=0.048,
-        resistance_ohm=0.120,
-    ),
+    _tm("AT2312", 1150, 4, 25, 350, 60, 75, "at2312-long-shaft-fixed-wing-motor.html"),
+    _tm("AT2312", 1400, 4, 30, 320, 60, 55, "at2312-long-shaft-fixed-wing-motor.html"),
+    _tm("AT2814", 900, 4, 45, 650, 108, 82, "at2814-long-shaft-fixed-wing-motor.html"),
+    _tm("AT2814", 1050, 4, 50, 700, 107, 35, "at2814-long-shaft-fixed-wing-motor.html"),
+    _tm("AT2814", 1200, 4, 55, 800, 108, 26, "at2814-long-shaft-fixed-wing-motor.html"),
+    _tm("AT3520", 550, 6, 50, 1100, 218, 31, "at3520-long-shaft-fixed-wing-motor.html"),
+    _tm("AT3520", 720, 5, 70, 1300, 219, 20, "at3520-long-shaft-fixed-wing-motor.html"),
+    _tm("AT3520", 850, 4, 70, 1100, 221, 14, "at3520-long-shaft-fixed-wing-motor.html"),
+    Motor("T-Motor", "AT4130 KV300", 300, 12 * 4.2, None, 3200, 0.408, None,
+          "https://shop.tmotor.com/products/at4130-long-shaft",
+          "series figures (230/300/450 KV): 405-408 g, 6-12S, up to 3200 W; per-KV current not published"),
 ]
 
 BATTERIES = [
-    Battery(
-        manufacturer="Tattu",
-        model="R-Line 4S 1550mAh 95C",
-        chemistry="LiPo",
-        voltage_nominal=14.8,
-        capacity_mah=1550,
-        mass_kg=0.188,
-        max_discharge_c=95,
-        cells_series=4,
-    ),
-    Battery(
-        manufacturer="Tattu",
-        model="R-Line 6S 1300mAh 120C",
-        chemistry="LiPo",
-        voltage_nominal=22.2,
-        capacity_mah=1300,
-        mass_kg=0.240,
-        max_discharge_c=120,
-        cells_series=6,
-    ),
-    Battery(
-        manufacturer="Turnigy",
-        model="3S 2200mAh 20C",
-        chemistry="LiPo",
-        voltage_nominal=11.1,
-        capacity_mah=2200,
-        mass_kg=0.165,
-        max_discharge_c=20,
-        cells_series=3,
-    ),
+    Battery("Tattu", "6S 10000mAh 25C (AS150)", "LiPo", 22.2, 10000, 1.517, 25, 6,
+            "https://genstattu.com/ta-p2-25c-10000-6s1p-as150.html"),
+    Battery("Tattu", "Plus 6S 16000mAh 15C (XT90S)", "LiPo", 22.2, 16000, 1.932, 15, 6,
+            "https://genstattu.com/tattu-plus-16000mah-6s-15c-22-2v-lipo-battery-pack-with-xt90s/"),
+    Battery("Tattu", "G-Tech 4S 5200mAh 35C (XT60)", "LiPo", 14.8, 5200, 0.4365, 35, 4,
+            "https://rcdrone.top/products/src-taa52004s35x6-tattu-g-tech-5200mah-4s-35c-14-8v-lipo-battery-pack-with-xt60-plug",
+            "retailer listing; retailers report 422-455 g"),
+    Battery("Molicel", "INR21700-P42A 6S2P (cells only)", "Li-ion", 21.6, 8400, 12 * 0.070, 3.6, 6,
+            "https://www.rcscomponents.kiev.ua/datasheets/INR21700P42A-V4-80092.pdf",
+            "12 cells at 70 g max (datasheet), 4200 mAh, 30 A continuous; add wiring, BMS and wrap (~10%)"),
 ]
 
 PROPELLERS = [
-    Propeller(
-        manufacturer="HQProp",
-        model="5x4.5x3",
-        diameter_inch=5.0,
-        pitch_inch=4.5,
-        blades=3,
-        mass_kg=0.004,
-        material="plastic",
-    ),
-    Propeller(
-        manufacturer="Gemfan",
-        model="6040 3-blade",
-        diameter_inch=6.0,
-        pitch_inch=4.0,
-        blades=3,
-        mass_kg=0.003,
-        material="plastic",
-    ),
-    Propeller(
-        manufacturer="APC",
-        model="11x7E",
-        diameter_inch=11.0,
-        pitch_inch=7.0,
-        blades=2,
-        mass_kg=0.013,
-        material="plastic",
-    ),
+    Propeller("APC", "11x7E", 11, 7, 2, 0.81 * 0.0283495, peak_efficiency=0.716,
+              source=f"{APC}11x7e/ ; {UIUC}volume-1/propDB-volume-1.html (apce_11x7, 6003 rpm)"),
+    Propeller("APC", "12x6E", 12, 6, 2, 0.95 * 0.0283495, source=f"{APC}12x6e/"),
+    Propeller("APC", "14x10E", 14, 10, 2, 1.20 * 0.0283495, peak_efficiency=0.788,
+              source=f"{APC}14x10e/ ; {UIUC}volume-4/propDB-volume-4.html (apce_14x10, 3003 rpm)"),
+    Propeller("APC", "16x10E", 16, 10, 2, 1.83 * 0.0283495, peak_efficiency=0.783,
+              source=f"{APC}16x10e/ ; {UIUC}volume-4/propDB-volume-4.html (apce_16x10, 2995 rpm)"),
 ]
 
 

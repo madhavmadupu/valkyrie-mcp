@@ -245,12 +245,12 @@ result.energy_wh   # {'climb': ..., 'transit_out': ..., 'loiter': ..., 'transit_
 | $C_{D0}$ | 0.025 | typical small UAV [R1, Ch. 12] | X8 measured 0.020, AeroSandbox 0.020: conservative |
 | Oswald $e$ | 0.80 | typical moderate AR [R1, Ch. 12] | X8 0.73, AeroSandbox 0.76: optimistic, net conservative with $C_{D0}$ |
 | Aspect ratio | 8 | assumption | – |
-| $C_{L,max}$ (takeoff, landing) | 1.4 | flapless small-UAV wing; 1.8+ needs flaps [R1, Ch. 5] | – |
+| $C_{L,max}$ (takeoff, landing) | 1.4 | flapless small-UAV wing; 1.8+ needs flaps [R1, Ch. 5] | Penguin BE datasheet: 1.3 clean, 1.7 flapped |
 | Max stall speed | 12 m/s | hand/bungee-launch class | – |
 | Propeller efficiency $\eta_p$ | 0.70 | UIUC APC Thin Electric peaks 0.68–0.79 [R8, R9] | yes |
 | Motor / ESC efficiency | 0.85 / 0.95 | typical brushless / ESC | no |
-| Battery specific energy | 150 Wh/kg | LiPo pack level | no |
-| Empty-weight fraction | 0.50 | fixed; small electric UAVs [R1, Ch. 6] | no |
+| Battery specific energy | 150 Wh/kg | LiPo pack level | real packs: Tattu 6S 10 Ah 146 Wh/kg, 6S 16 Ah 184 Wh/kg [R21] |
+| Empty-weight fraction | 0.50 | fixed; small electric UAVs [R1, Ch. 6] | Albatross 0.44, Penguin BE ≈0.49 (datasheets): not optimistic; too few for a regression |
 | Climb rate | 2.5 m/s | assumption | – |
 | Max operational wind | 10 m/s | assumption | – |
 | Max feasible T/W | 0.6 | small electric UAV | – |
@@ -264,4 +264,4 @@ result.energy_wh   # {'climb': ..., 'transit_out': ..., 'loiter': ..., 'transit_
 - No battery reserve, Peukert effect or depth-of-discharge limit; no payload or avionics power. Battery mass is a lower bound.
 - Loiter at the minimum-power $C_L$ can sit close to $C_{L,max}$ (about 1.07 $V_s$ with the defaults); no stall-margin enforcement yet.
 - Group and wind checks use cruise speed, not max dash speed.
-- No end-to-end validation against a flight log yet ([validation](validation.md#what-is-not-validated-yet)).
+- Whole-aircraft sizing from payload and endurance alone is a first estimate: ±40% on the two datasheet aircraft checked ([validation §7](validation.md#7-manufacturer-datasheets)). Cruise power and battery endurance are much closer (§6–7).

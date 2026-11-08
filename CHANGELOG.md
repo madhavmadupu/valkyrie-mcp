@@ -37,6 +37,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   simulator cross-checks; runs in CI) and `validation/run_validation.py` (adds AeroSandbox; regenerates
   `docs/validation.md` and its figures); `[validation]` extra
 - Documentation: `docs/getting-started.md`, `docs/theory.md`, `docs/validation.md`, `docs/references.md`
+- Mission Lab (`valkyrie-lab`): local web app with animated mission profile, live telemetry, battery and
+  power charts, constraint diagram, energy breakdown, wind-direction chart and checks; screenshots in
+  `docs/assets/screenshots/`
+- `MissionSimulator.run(record=True)` returns a per-step trace (time, distance, altitude, speeds, power, energy)
+- `size_uav` returns the interpreted `mission`, also when the mission is infeasible
+- Real-world validation datasets in `validation/data/`: steady-flight windows from the public PX4 flight
+  logs of the Applied Aeronautics Albatross fleet (`validation/flightlogs.py`), manufacturer datasheets
+  (Penguin BE, Albatross, Skylark I-LEX, Skywalker X8), and a Wikipedia UAV infobox crawl
+  (`validation/uav_database.py`, reference only); validation report sections 6 and 7
 
 ### Changed
 - Range missions now default to a 10 m/s headwind (`max_wind_speed_ms` default); set it to 0 for still-air numbers
@@ -48,6 +57,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed unused dependencies (numpy, scipy, httpx, pyyaml, pydantic-settings) and the unused `physics/weights.py`
 
 ### Removed
+- The 9 unverified component entries (mostly FPV racing-quad parts, wrong class for fixed-wing UAVs);
+  replaced by sourced fixed-wing parts: T-Motor AT2312/AT2814/AT3520/AT4130, Tattu 6S 10 Ah and 16 Ah,
+  4S 5.2 Ah, Molicel P42A 6S2P, APC 11x7E/12x6E/14x10E/16x10E with UIUC-measured peak efficiency
+- `Motor.max_thrust_estimate_n` (unsourced 200 W/N rule of thumb)
 - `PropellerModel`: its efficiency curve (peak 0.85 at J = 0.9) contradicted UIUC wind-tunnel data and sizing never used it
 
 ## [0.1.0] - 2026-11-08

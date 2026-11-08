@@ -1,6 +1,12 @@
 """Test configuration and fixtures for pytest."""
 
+import pathlib
+import sys
+
 import pytest
+
+# Reference data shared by tests and validation/run_validation.py
+sys.path.insert(0, str(pathlib.Path(__file__).parent / "validation"))
 
 from valkyrie.core.models import MissionProfile, MissionRequirements, PropulsionType
 

@@ -1,6 +1,6 @@
 # Getting Started
 
-**Contents:** [Install](#install) · [Size an aircraft](#size-an-aircraft) · [Mission inputs](#mission-inputs) · [Outputs](#outputs) · [Transit, round trips and wind](#transit-round-trips-and-wind) · [Military checks](#military-checks) · [Simulate a mission](#simulate-a-mission) · [MCP server](#mcp-server) · [Tests and validation](#tests-and-validation)
+**Contents:** [Install](#install) · [Mission Lab](#mission-lab) · [Size an aircraft](#size-an-aircraft) · [Mission inputs](#mission-inputs) · [Outputs](#outputs) · [Transit, round trips and wind](#transit-round-trips-and-wind) · [Military checks](#military-checks) · [Simulate a mission](#simulate-a-mission) · [MCP server](#mcp-server) · [Tests and validation](#tests-and-validation)
 
 ---
 
@@ -18,6 +18,32 @@ pip install -e ".[validation]"   # + AeroSandbox, ambiance, matplotlib (validati
 ```
 
 Runtime dependencies are only `pydantic` and `mcp`.
+
+---
+
+## Mission Lab
+
+```bash
+valkyrie-lab                        # opens http://127.0.0.1:8765
+valkyrie-lab --port 9000 --no-browser
+```
+
+A local web app on top of the same engine: set the mission with sliders (or a preset) and it re-sizes, re-simulates and re-plots in about 50 ms.
+
+| Panel | Shows |
+|---|---|
+| Header | FEASIBLE / NOT FEASIBLE and the DoD UAS Group |
+| KPIs | gross weight, wingspan, battery (kg, Wh), thrust, wing loading, mission time |
+| Mission profile | animated side view: climb, transit, loiter orbit, return, wind; play, pause, speed, scrub; live altitude, airspeed, ground speed, power, battery |
+| Battery state of charge, battery power | over mission time, segments shaded, cursor follows playback |
+| Constraint diagram | takeoff, cruise and climb T/W, stall cap, feasible region, design point |
+| Energy by segment | Wh and share for climb, transit out, loiter, transit back |
+| Energy vs wind direction | simulated mission energy for wind from every direction |
+| Engineering checks | every check with pass, warning or error, and the assumptions used |
+
+**Screenshots.** URL parameters make a frame reproducible: `?preset=Hot%20%26%20high&t=0.32&paused=1` loads a preset, jumps to 32% of the mission and pauses. Presets: `Tactical ISR`, `Recon out-and-back`, `Long-range delivery`, `Hot & high`, `Impossible`. Space toggles play.
+
+The page loads Chart.js and fonts from public CDNs, so it needs an internet connection; the server binds to `127.0.0.1` only.
 
 ---
 

@@ -1,0 +1,294 @@
+name,url,revid,electric,empty_kg,gross_kg,mtow_kg,span_m,wing_area_m2,payload_kg,endurance_h,cruise_ms,max_speed_ms,rotorcraft
+AAI Aerosonde,https://en.wikipedia.org/wiki/AAI_Aerosonde,1378180183,0,8.0,13.0,,2.9,,,30.0,20.0,,0
+AAI RQ-2 Pioneer,https://en.wikipedia.org/wiki/AAI_RQ-2_Pioneer,1326870322,0,,205.0,,4.8768,,,,,,0
+AAI RQ-7 Shadow,https://en.wikipedia.org/wiki/AAI_RQ-7_Shadow,1383746773,0,77.0,170.0,,3.87,,45.0,6.0,,,0
+ANTEX-M,https://en.wikipedia.org/wiki/ANTEX-M,1357011576,0,,,150.0,7.0,,30.0,15.0,,36.111111111111114,0
+AVIC Dark Sword,https://en.wikipedia.org/wiki/AVIC_Dark_Sword,1369764360,0,,13000.0,15000.0,,,,,,342.77777777777777,0
+AVIC WZ-8,https://en.wikipedia.org/wiki/AVIC_WZ-8,1382693563,0,,,,6.7,,,,1028.888888888889,,0
+AeroVironment Broomstick,https://en.wikipedia.org/wiki/AeroVironment_Broomstick,1321169201,0,,20.41165665,,7.62,3.8703406464,,,6.7056,,0
+AeroVironment FQM-151 Pointer,https://en.wikipedia.org/wiki/AeroVironment_FQM-151_Pointer,1321129322,1,,4.0,,2.74,,,1.0,,20.27777777777778,0
+AeroVironment RQ-14 Dragon Eye,https://en.wikipedia.org/wiki/AeroVironment_RQ-14_Dragon_Eye,1360510139,0,,2.7,,1.143,,,1.0,17.8816,,0
+AeroVironment RQ-20 Puma,https://en.wikipedia.org/wiki/AeroVironment_RQ-20_Puma,1384219526,0,,,5.9,2.8,,,2.0,,23.055555555555557,0
+AeroVironment T-20,https://en.wikipedia.org/wiki/AeroVironment_T-20,1377010968,0,50.0,84.0,,5.3,,,24.0,30.833333333333336,38.611111111111114,0
+AeroVironment Wasp III,https://en.wikipedia.org/wiki/AeroVironment_Wasp_III,1384219582,1,0.43,6.53,,0.723,,,0.75,11.11111111111111,18.055555555555557,0
+Aerojet General X-8,https://en.wikipedia.org/wiki/Aerojet_General_X-8,1244609385,0,61.23496995,497.59082989,,1.524,3.3445094400000004,,,,1797.1008,0
+Aerojet SD-2 Overseer,https://en.wikipedia.org/wiki/Aerojet_SD-2_Overseer,1344418227,0,,450.0,510.0,4.06,2.58,,0.75,,154.44444444444446,0
+Aeronautics Defense Dominator,https://en.wikipedia.org/wiki/Aeronautics_Defense_Dominator,1351141909,0,,1200.0,,13.42,,,,,98.33333333333334,0
+Aeroscout Scout B1-100,https://en.wikipedia.org/wiki/Aeroscout_Scout_B1-100,1321144528,0,44.0,77.0,,,,,1.5,,30.555555555555557,0
+AirStrato,https://en.wikipedia.org/wiki/AirStrato,1335142384,1,185.0,230.0,,16.0,19.2,,20.0,42.22222222222222,47.22222222222222,0
+Airbus Helicopters VSR700,https://en.wikipedia.org/wiki/Airbus_Helicopters_VSR700,1378515946,0,,,700.0,,,,10.0,61.111111111111114,,0
+Airbus THOR,https://en.wikipedia.org/wiki/Airbus_THOR,1321160925,1,21.0,,,,,,,,,0
+Airbus Wingman,https://en.wikipedia.org/wiki/Airbus_Wingman,1375320494,0,,,,12.0,,,,,,0
+Aisheng ASN-209,https://en.wikipedia.org/wiki/Aisheng_ASN-209,1373396278,0,,,320.0,7.5,,50.0,10.0,38.88888888888889,50.0,0
+Alenia Aermacchi Sky-X,https://en.wikipedia.org/wiki/Alenia_Aermacchi_Sky-X,1341664545,0,1000.0,1200.0,1450.0,5.94,,,,133.88888888888889,180.0,0
+Alenia Aermacchi Sky-Y,https://en.wikipedia.org/wiki/Alenia_Aermacchi_Sky-Y,1334251547,0,850.0,1050.0,1200.0,9.94,,,14.0,72.22222222222223,,0
+Alenia Aeronautica ITV,https://en.wikipedia.org/wiki/Alenia_Aeronautica_ITV,1321129299,0,550.0,1000.0,,5.74,,300.0,,,,0
+Alliant RQ-6 Outrider,https://en.wikipedia.org/wiki/Alliant_RQ-6_Outrider,1351473558,0,136.077711,,,3.3528000000000002,,,4.9,,,0
+Altec MART,https://en.wikipedia.org/wiki/Altec_MART,1335050956,0,,110.0,,3.4,,,4.0,,54.16666666666667,0
+Anduril FQ-44 Fury,https://en.wikipedia.org/wiki/Anduril_FQ-44_Fury,1380691681,0,,,2267.96185,5.1816,,,,,,0
+Antigravity A1,https://en.wikipedia.org/wiki/Antigravity_A1,1375434788,0,,,0.249,,,,0.4,,16.0,0
+Argus As 292,https://en.wikipedia.org/wiki/Argus_As_292,1350728791,0,27.0,,,2.4,,,0.5,,27.77777777777778,0
+Armstechno NITI,https://en.wikipedia.org/wiki/Armstechno_NITI,1321128909,0,,,60.0,5.38,2.35,,,25.0,33.333333333333336,0
+Atlas C4EYE,https://en.wikipedia.org/wiki/Atlas_C4EYE,1321166450,1,,,2.4,1.55,,,,,30.0,0
+Atobá XR,https://en.wikipedia.org/wiki/Atob%C3%A1_XR,1334824793,0,1400.0,,1700.0,17.0,,,35.0,102.77777777777779,,0
+Aurora Flight Sciences Orion,https://en.wikipedia.org/wiki/Aurora_Flight_Sciences_Orion,1378673883,0,2345.0725529,5080.234544,,40.2336,,,120.0,,,0
+Aurora Goldeneye,https://en.wikipedia.org/wiki/Aurora_Goldeneye,1321129416,0,48.0,68.0,,3.0,,,,,81.94444444444444,0
+Autel Evo,https://en.wikipedia.org/wiki/Autel_Evo,1372904674,1,1.191,,1.27,,,,0.65,,3.452055555555556,0
+Aviolanda AT-21,https://en.wikipedia.org/wiki/Aviolanda_AT-21,1321162755,0,155.0,300.0,,3.6,1.44,,1.1666666666666667,79.16666666666667,91.66666666666667,0
+Avionics Services Caçador,https://en.wikipedia.org/wiki/Avionics_Services_Ca%C3%A7ador,1321161175,0,,,1270.0,16.6,,,40.0,,57.5,0
+BAE Systems HERTI,https://en.wikipedia.org/wiki/BAE_Systems_HERTI,1369944863,0,,340.1942775,,11.8872,,,20.0,64.8208,,0
+BAE Systems Mantis,https://en.wikipedia.org/wiki/BAE_Systems_Mantis,1325170259,0,1000.0,,9000.0,,,,30.0,,,0
+BAE Systems Phoenix,https://en.wikipedia.org/wiki/BAE_Systems_Phoenix,1361886365,0,,175.0,,5.6,,49.895160700000005,5.0,,46.111111111111114,0
+BAE Systems Silver Fox,https://en.wikipedia.org/wiki/BAE_Systems_Silver_Fox,1348259267,0,11.33980925,,,,,,,,,0
+BAE Systems SkyEye,https://en.wikipedia.org/wiki/BAE_Systems_SkyEye,1325963340,0,,570.0,,7.32,,81.6466266,8.0,,55.55555555555556,0
+BAE Systems Taranis,https://en.wikipedia.org/wiki/BAE_Systems_Taranis,1379271196,0,,,,10.0,,,,,,0
+BQM-145 Peregrine,https://en.wikipedia.org/wiki/BQM-145_Peregrine,1350507042,0,,900.0,,3.2,,136.077711,,,309.72222222222223,0
+BQM-147 Dragon,https://en.wikipedia.org/wiki/BQM-147_Dragon,1325963282,0,40.8233133,,,2.49936,,,2.5,,36.111111111111114,0
+Bayraktar Kızılelma,https://en.wikipedia.org/wiki/Bayraktar_K%C4%B1z%C4%B1lelma,1380691138,0,,,8500.0,10.0,,,3.0,204.16666666666669,305.55555555555554,0
+Beechcraft QU-22 Pave Eagle,https://en.wikipedia.org/wiki/Beechcraft_QU-22_Pave_Eagle,1379977048,0,,2177.243376,,12.024360000000001,,,10.0,,91.19615999999999,0
+Bell AH-1 Cobra,https://en.wikipedia.org/wiki/Bell_AH-1_Cobra,1383652941,0,2635.3716697,,4309.127515,,,,,,,1
+Bell Eagle Eye,https://en.wikipedia.org/wiki/Bell_Eagle_Eye,1347192135,0,590.0,1020.0,,7.37,,,6.0,,100.0,0
+Boeing A/MH-6X MELB,https://en.wikipedia.org/wiki/Boeing_A/MH-6X_MELB,1383452876,0,722.0,,1610.0,8.33,54.6,,,69.44444444444444,78.33333333333334,0
+Boeing A160 Hummingbird,https://en.wikipedia.org/wiki/Boeing_A160_Hummingbird,1383452860,0,1134.0,2948.0,,,,,20.0,,71.66666666666667,0
+Boeing CQM-121 Pave Tiger,https://en.wikipedia.org/wiki/Boeing_CQM-121_Pave_Tiger,1321473041,0,,127.00586360000001,,2.4384,,,8.0,40.2336,89.408,0
+Boeing Condor,https://en.wikipedia.org/wiki/Boeing_Condor,1346555855,0,,9525.43977,9525.43977,62.484,,,161.0,,,0
+Boeing Insitu MQ-27 ScanEagle,https://en.wikipedia.org/wiki/Boeing_Insitu_MQ-27_ScanEagle,1381030283,0,14.0,18.0,26.5,3.11,,4.9895160700000005,20.0,30.84576,41.12768,0
+Boeing Insitu RQ-21 Blackjack,https://en.wikipedia.org/wiki/Boeing_Insitu_RQ-21_Blackjack,1382745470,0,36.74098197,,61.23496995,4.8768,,,16.0,27.77777777777778,,0
+Boeing MQ-25 Stingray,https://en.wikipedia.org/wiki/Boeing_MQ-25_Stingray,1384259845,0,,,,22.86,,,,,,0
+Boeing MQ-28 Ghost Bat,https://en.wikipedia.org/wiki/Boeing_MQ-28_Ghost_Bat,1381917420,0,,,,7.3,,,,,300.0,0
+Boeing Phantom Ray,https://en.wikipedia.org/wiki/Boeing_Phantom_Ray,1321141569,1,,,16556.121505,15.24,,,,274.48256,,0
+Boeing X-45,https://en.wikipedia.org/wiki/Boeing_X-45,1355484000,0,3628.73896,,,10.0584,,,,,,0
+Boeing X-48,https://en.wikipedia.org/wiki/Boeing_X-48,1383601685,0,177.80820904,226.796185,,6.4008,9.33675552,,0.6666666666666666,,,0
+Boeing X-50 Dragonfly,https://en.wikipedia.org/wiki/Boeing_X-50_Dragonfly,1337826686,0,574.0,645.0,,,,,,77.22222222222223,194.44444444444446,0
+Boeing X-51 Waverider,https://en.wikipedia.org/wiki/Boeing_X-51_Waverider,1383143759,0,1814.0,,,,,,,,1722.2222222222224,0
+Boeing YQM-94 B-Gull,https://en.wikipedia.org/wiki/Boeing_YQM-94_B-Gull,1328033190,1,,5897.0,,27.43,,,30.0,,,0
+Bramor C4EYE,https://en.wikipedia.org/wiki/Bramor_C4EYE,1336960254,1,,,4.7,2.3,,,,,30.0,0
+Brunswick-Balke-Collender OQ-4,https://en.wikipedia.org/wiki/Brunswick-Balke-Collender_OQ-4,1321164171,0,,,,3.6,,,1.0,,,0
+CAC Fox,https://en.wikipedia.org/wiki/CAC_Fox,1339695114,0,73.0,135.0,,4.0,,,5.0,,50.0,0
+CAC K100,https://en.wikipedia.org/wiki/CAC_K100,1334519037,0,23.0,28.0,,2.6,,5.0,0.5,,65.0,0
+CAIG Wing Loong,https://en.wikipedia.org/wiki/CAIG_Wing_Loong,1383048392,0,,1100.0,,14.0,,,20.0,,77.77777777777779,0
+CAIG Wing Loong II,https://en.wikipedia.org/wiki/CAIG_Wing_Loong_II,1380695378,0,,,4200.0,20.5,,,32.0,55.55555555555556,102.77777777777779,0
+CBT BQM-1BR,https://en.wikipedia.org/wiki/CBT_BQM-1BR,1370053868,0,61.0,,90.25,3.18,,,,,155.55555555555557,0
+Canadair CL-227 Sentinel,https://en.wikipedia.org/wiki/Canadair_CL-227_Sentinel,1326768260,0,,,190.0,,,,,,,0
+Canadair CL-89,https://en.wikipedia.org/wiki/Canadair_CL-89,1346888753,0,78.19932458800001,,155.58218291,0.9144000000000001,,,,,205.6384,0
+Chengdu WZ-10,https://en.wikipedia.org/wiki/Chengdu_WZ-10,1354040948,0,2300.0,,3200.0,20.0,,,20.0,172.22222222222223,,0
+Clout Mechanical Air-Ship,https://en.wikipedia.org/wiki/Clout_Mechanical_Air-Ship,1376940288,0,158.7573295,,,,,,,,,0
+DJI Agras,https://en.wikipedia.org/wiki/DJI_Agras,1375435475,1,50.0,,101.0,,,,0.3,,,0
+DJI Air,https://en.wikipedia.org/wiki/DJI_Air,1384476295,0,0.724,,,,,,0.75,,21.0,0
+DJI Avata,https://en.wikipedia.org/wiki/DJI_Avata,1372904423,1,0.377,,,,,,0.38333333333333336,,27.000000000000004,0
+DJI Flip,https://en.wikipedia.org/wiki/DJI_Flip,1375434903,1,0.249,,,,,,0.5166666666666667,,16.0,0
+DJI FlyCart,https://en.wikipedia.org/wiki/DJI_FlyCart,1375704184,1,42.5,65.0,95.0,,,,0.48333333333333334,,20.0,0
+DJI Inspire,https://en.wikipedia.org/wiki/DJI_Inspire,1372904770,1,3.995,,4.31,,,,0.4666666666666667,,26.11111111111111,0
+DJI Lito,https://en.wikipedia.org/wiki/DJI_Lito,1375434953,1,0.249,,0.34,,,,0.6,,18.0,0
+DJI Matrice,https://en.wikipedia.org/wiki/DJI_Matrice,1372904992,1,3.6,,9.0,,,,0.75,,23.0,0
+DJI Mavic,https://en.wikipedia.org/wiki/DJI_Mavic,1372905025,1,0.915,,1.05,,,,0.75,,21.0,0
+DJI Mini,https://en.wikipedia.org/wiki/DJI_Mini,1372905063,0,0.249,,,,,,0.5666666666666667,,16.0,0
+DJI Neo,https://en.wikipedia.org/wiki/DJI_Neo,1381593648,1,0.135,,,,,,0.3,,16.0,0
+DJI Phantom,https://en.wikipedia.org/wiki/DJI_Phantom,1377823042,0,1.375,,,,,,0.5,,20.0,0
+DJI Spark,https://en.wikipedia.org/wiki/DJI_Spark,1372905481,0,0.3,,,,,,0.26666666666666666,,13.88888888888889,0
+DRDO Abhyas,https://en.wikipedia.org/wiki/DRDO_Abhyas,1371240028,0,,75.0,,,,,0.75,,180.0,0
+DRDO Ghatak,https://en.wikipedia.org/wiki/DRDO_Ghatak,1379499184,0,8150.0,,,18.0,,,8.0,,,0
+DRDO Imperial Eagle,https://en.wikipedia.org/wiki/DRDO_Imperial_Eagle,1337064568,0,2.3,,,,,,,11.11111111111111,25.0,0
+DRDO Lakshya,https://en.wikipedia.org/wiki/DRDO_Lakshya,1381965295,0,,,705.0,5.0,2.27,,,,,0
+DRDO Netra,https://en.wikipedia.org/wiki/DRDO_Netra,1376753466,1,1.5,,,0.9,,,0.5,,8.333333333333334,0
+DRDO Nishant,https://en.wikipedia.org/wiki/DRDO_Nishant,1376531682,0,,350.0,,6.5,,,4.5,,60.0,0
+DRDO Rustom,https://en.wikipedia.org/wiki/DRDO_Rustom,1376872322,0,720.0,,,7.9,,,15.0,34.72222222222222,41.66666666666667,0
+DRS RQ-15 Neptune,https://en.wikipedia.org/wiki/DRS_RQ-15_Neptune,1372487438,0,,36.0,,2.1336,,9.071847400000001,4.0,,44.44444444444444,0
+DRS Sentry HP,https://en.wikipedia.org/wiki/DRS_Sentry_HP,1325964415,0,82.0,147.0,,3.9,,34.01942775,8.0,,51.38888888888889,0
+Dassault AVE-C Moyen Duc,https://en.wikipedia.org/wiki/Dassault_AVE-C_Moyen_Duc,1377101261,0,,500.0,,,,,4.0,,,0
+Dassault AVE-D Petit Duc,https://en.wikipedia.org/wiki/Dassault_AVE-D_Petit_Duc,1293749045,0,35.0,60.0,,2.4,,,,,166.66666666666669,0
+Dassault nEUROn,https://en.wikipedia.org/wiki/Dassault_nEUROn,1351955344,0,4900.0,7000.0,,12.5,,,,,272.22222222222223,0
+Dassault-Sagem SlowFast,https://en.wikipedia.org/wiki/Dassault-Sagem_SlowFast,1259936559,0,,500.0,,,,,4.0,,,0
+Denel Dynamics Bateleur,https://en.wikipedia.org/wiki/Denel_Dynamics_Bateleur,1338365069,0,,,1000.0,15.0,,,24.0,,69.44444444444444,0
+Diamond Hero,https://en.wikipedia.org/wiki/Diamond_Hero,1321151421,0,,,,,,,6.5,,,0
+Dornier DAR,https://en.wikipedia.org/wiki/Dornier_DAR,1372736168,0,,110.0,,2.0,,,,,69.44444444444444,0
+Dynetics X-61 Gremlins,https://en.wikipedia.org/wiki/Dynetics_X-61_Gremlins,1268816378,0,,680.0,,3.47,,65.7,,,,0
+EADS 3 Sigma Nearchos,https://en.wikipedia.org/wiki/EADS_3_Sigma_Nearchos,1285043870,0,60.0,,110.0,5.1,,,12.0,,61.111111111111114,0
+EADS Barracuda,https://en.wikipedia.org/wiki/EADS_Barracuda,1377107115,0,2300.0,,3250.0,7.22,,,,,289.1666666666667,0
+EADS Harfang,https://en.wikipedia.org/wiki/EADS_Harfang,1321133991,0,657.0,,1250.0,16.6,,,,,,0
+EADS Talarion,https://en.wikipedia.org/wiki/EADS_Talarion,1363058243,0,3200.0,10000.0,,28.0,,,,,175.0,0
+EHang,https://en.wikipedia.org/wiki/EHang,1374322775,1,,0.68,,0.35,,,0.4166666666666667,,16.666666666666668,0
+Eagle Aircraft Eagle 150,https://en.wikipedia.org/wiki/Eagle_Aircraft_Eagle_150,1303906999,0,430.0,,650.0,7.16,5.2,,5.0,61.66666666666667,66.94444444444444,0
+Eurodrone,https://en.wikipedia.org/wiki/Eurodrone,1374802530,1,,,13000.0,26.0,,300.0,40.0,,138.88888888888889,0
+FL-71,https://en.wikipedia.org/wiki/FL-71,1373342547,0,,22000.0,28000.0,,,,,,611.1111111111111,0
+Fairchild BQ-3,https://en.wikipedia.org/wiki/Fairchild_BQ-3,1374067596,0,,6939.963261000001,,11.277600000000001,,,,,98.3488,0
+Fairchild SD-5 Osprey,https://en.wikipedia.org/wiki/Fairchild_SD-5_Osprey,1321162749,0,,4082.33133,,7.315200000000001,,,,,,0
+Feihong FH-97,https://en.wikipedia.org/wiki/Feihong_FH-97,1341667165,0,,,3500.0,12.0,,,,,,0
+Fieseler Fi 157,https://en.wikipedia.org/wiki/Fieseler_Fi_157,1279984785,0,226.0,309.0,,6.5,5.9,,,,81.38888888888889,0
+Fleetwings A-1,https://en.wikipedia.org/wiki/Fleetwings_A-1,1321164275,0,,,,6.0,,,1.0,,80.55555555555556,0
+Fleetwings BQ-1,https://en.wikipedia.org/wiki/Fleetwings_BQ-1,1321154090,0,,3492.661249,,14.630400000000002,,,,100.584,,0
+Fleetwings BQ-2,https://en.wikipedia.org/wiki/Fleetwings_BQ-2,1321154096,0,,3492.661249,,14.630400000000002,,,,,,0
+Fletcher FBT-2,https://en.wikipedia.org/wiki/Fletcher_FBT-2,1321127327,0,,,,9.144,,,,,78.232,0
+Freewing Scorpion,https://en.wikipedia.org/wiki/Freewing_Scorpion,1321129422,0,,,,4.9,,22.6796185,5.0,,65.27777777777779,0
+Fuji TACOM,https://en.wikipedia.org/wiki/Fuji_TACOM,1330955262,0,619.0,,,2.5,,,,,,0
+GAF Jindivik,https://en.wikipedia.org/wiki/GAF_Jindivik,1384343724,0,1315.0,,1451.0,6.32,6.32,,,,252.22222222222223,0
+GIDS Shahpar,https://en.wikipedia.org/wiki/GIDS_Shahpar,1375945678,0,,480.0,,6.6,,,7.0,41.66666666666667,,0
+GIDS Shahpar-III,https://en.wikipedia.org/wiki/GIDS_Shahpar-III,1375950914,0,,,1650.0,19.5072,,,40.0,,,0
+GIDS Uqab,https://en.wikipedia.org/wiki/GIDS_Uqab,1375951206,0,,,,5.5,,,6.0,41.66666666666667,,0
+General Atomics Altus,https://en.wikipedia.org/wiki/General_Atomics_Altus,1300206514,0,,966.1517481000001,,16.5,12.170298240000001,,24.0,,,0
+General Atomics Gnat,https://en.wikipedia.org/wiki/General_Atomics_Gnat,1275568650,0,254.01172720000002,517.0953018,,10.668000000000001,,,48.0,,,0
+General Atomics MQ-1 Predator,https://en.wikipedia.org/wiki/General_Atomics_MQ-1_Predator,1384165658,0,512.5593781,1020.0,,14.8,11.454944832,,24.0,,,0
+General Atomics MQ-1C Gray Eagle,https://en.wikipedia.org/wiki/General_Atomics_MQ-1C_Gray_Eagle,1383306627,0,,,1633.0,17.0,,360.0,25.0,,,0
+General Atomics MQ-20 Avenger,https://en.wikipedia.org/wiki/General_Atomics_MQ-20_Avenger,1383231769,0,,,8255.0,20.0,,,18.0,180.0,205.55555555555557,0
+General Atomics MQ-9 Reaper,https://en.wikipedia.org/wiki/General_Atomics_MQ-9_Reaper,1383998757,0,2223.0,,4760.0,20.0,,,27.0,86.94444444444444,133.88888888888889,0
+General Atomics Mojave,https://en.wikipedia.org/wiki/General_Atomics_Mojave,1358800908,0,,,3175.1465900000003,16.0,,,25.0,,,0
+General Atomics Sparrowhawk,https://en.wikipedia.org/wiki/General_Atomics_Sparrowhawk,1357901943,0,,226.796185,,4.2672,,,10.0,,,0
+Globe KD5G,https://en.wikipedia.org/wiki/Globe_KD5G,1321144109,0,,,,2.7432000000000003,,,,,154.2288,0
+GoPro Karma,https://en.wikipedia.org/wiki/GoPro_Karma,1379993291,0,0.625,,,,,,0.3333333333333333,,15.0,0
+Griffon Aerospace Valiant,https://en.wikipedia.org/wiki/Griffon_Aerospace_Valiant,1378699458,1,,,,,,,,,,1
+Guizhou WZ-7 Soaring Dragon,https://en.wikipedia.org/wiki/Guizhou_WZ-7_Soaring_Dragon,1377638295,0,,,,24.86,,,10.0,,,0
+Gyrodyne QH-50 DASH,https://en.wikipedia.org/wiki/Gyrodyne_QH-50_DASH,1376221789,0,523.44559498,,1036.4585654500002,,,,1.0,22.352,41.12768,0
+HAL CATS Warrior,https://en.wikipedia.org/wiki/HAL_CATS_Warrior,1378016112,0,,,2100.0,7.6,,650.0,,219.44444444444446,,0
+HAL RUAV-200,https://en.wikipedia.org/wiki/HAL_RUAV-200,1348250650,0,,,2200.0,,,,6.0,,27.77777777777778,0
+HAL TAPAS BH-201,https://en.wikipedia.org/wiki/HAL_TAPAS_BH-201,1376569972,0,1800.0,,,20.6,,,18.0,,62.22222222222223,0
+HESA Ababil,https://en.wikipedia.org/wiki/HESA_Ababil,1381091568,0,30.0,,83.0,3.25,1.76,40.0,2.0,69.44444444444444,,0
+HESA Hamaseh,https://en.wikipedia.org/wiki/HESA_Hamaseh,1325981105,0,230.0,415.0,,,,,11.0,45.833333333333336,53.88888888888889,0
+HESA Karrar,https://en.wikipedia.org/wiki/HESA_Karrar,1348060976,0,,,700.0,2.5,,227.0,,,250.0,0
+Harbin BZK-005,https://en.wikipedia.org/wiki/Harbin_BZK-005,1355344481,0,,,1250.0,19.0,,,40.0,41.66666666666667,,0
+Honeywell RQ-16 T-Hawk,https://en.wikipedia.org/wiki/Honeywell_RQ-16_T-Hawk,1372487633,0,,8.39,,,,,0.6666666666666666,,36.111111111111114,0
+Hongdu GJ-11,https://en.wikipedia.org/wiki/Hongdu_GJ-11,1383402270,0,,,,14.4,,,,,,0
+Hydra Technologies Ehécatl,https://en.wikipedia.org/wiki/Hydra_Technologies_Eh%C3%A9catl,1318416444,0,,,54.43,3.7,,,8.0,,,0
+IAI RQ-5 Hunter,https://en.wikipedia.org/wiki/IAI_RQ-5_Hunter,1372479753,0,,727.0,884.5051215000001,10.567416000000001,,,21.0,,,0
+IAI Searcher,https://en.wikipedia.org/wiki/IAI_Searcher,1380230927,0,,450.0,,8.55,,68.0,20.0,,55.88,0
+IAIO Fotros,https://en.wikipedia.org/wiki/IAIO_Fotros,1345446240,0,,,,,,,30.0,,,0
+Indonesian Aerospace Elang Hitam,https://en.wikipedia.org/wiki/Indonesian_Aerospace_Elang_Hitam,1357176466,0,575.0,,1300.0,16.0,,,30.0,,65.27777777777779,0
+Intel Falcon 8,https://en.wikipedia.org/wiki/Intel_Falcon_8,1362236825,1,1.2,,2.8,,,0.7983225712,0.43333333333333335,,18.0,0
+Interstate TDR,https://en.wikipedia.org/wiki/Interstate_TDR,1335061257,0,,2676.1949830000003,,14.630400000000002,,,,62.5856,,0
+Interstate XBDR,https://en.wikipedia.org/wiki/Interstate_XBDR,1321141281,0,,4898.797596,,15.745968,33.63090048,,,,,0
+KAI RQ-101 Songgolmae,https://en.wikipedia.org/wiki/KAI_RQ-101_Songgolmae,1338735981,0,,215.0,290.0,6.4,,,6.0,41.66666666666667,51.38888888888889,0
+Kamov Ka-137,https://en.wikipedia.org/wiki/Kamov_Ka-137,1372554942,0,,280.0,,,,80.0,4.0,,48.611111111111114,0
+Kawasaki KAQ-1,https://en.wikipedia.org/wiki/Kawasaki_KAQ-1,1352724252,0,,,155.12859054,3.51,,,,69.44444444444444,156.464,0
+Kettering Bug,https://en.wikipedia.org/wiki/Kettering_Bug,1382446314,0,,240.0,,4.5,,,,22.22222222222222,53.6448,0
+Korean Air KUS-FS,https://en.wikipedia.org/wiki/Korean_Air_KUS-FS,1338724903,0,,,5750.0,25.0,,,24.0,,100.0,0
+Kratos XQ-58 Valkyrie,https://en.wikipedia.org/wiki/Kratos_XQ-58_Valkyrie,1380696130,0,1133.980925,,2721.55422,8.2296,,272.155422,,245.0,,0
+Kronshtadt Grom,https://en.wikipedia.org/wiki/Kronshtadt_Grom,1369345181,0,7000.0,,,10.0,,,,222.22222222222223,277.77777777777777,0
+Kronshtadt Helios-RLD,https://en.wikipedia.org/wiki/Kronshtadt_Helios-RLD,1321168887,0,,,4000.0,30.0,,,,97.22222222222223,,0
+Kronshtadt Orion,https://en.wikipedia.org/wiki/Kronshtadt_Orion,1383568785,0,,,1150.0,16.0,,,24.0,33.333333333333336,55.55555555555556,0
+Kronshtadt Sirius,https://en.wikipedia.org/wiki/Kronshtadt_Sirius,1335712028,0,,,2500.0,20.0,,,,50.0,,0
+LAPAN LSU-02,https://en.wikipedia.org/wiki/LAPAN_LSU-02,1351511035,0,15.0,,18.0,2.4,,,5.0,,27.77777777777778,0
+LAPAN LSU-03,https://en.wikipedia.org/wiki/LAPAN_LSU-03,1347784457,0,24.0,,48.0,3.5,,,6.0,27.77777777777778,41.66666666666667,0
+LTV XQM-93,https://en.wikipedia.org/wiki/LTV_XQM-93,1358699003,0,1089.0,2404.0,,17.37,,,24.0,47.22222222222222,,0
+Lavochkin La-17,https://en.wikipedia.org/wiki/Lavochkin_La-17,1377024319,0,,3065.0,,7.5,,,1.0,,250.0,0
+Lipán M3,https://en.wikipedia.org/wiki/Lip%C3%A1n_M3,1369827630,0,,,60.0,4.6,,,,,47.22222222222222,0
+Lockheed Aequare,https://en.wikipedia.org/wiki/Lockheed_Aequare,1321351365,0,,63.502931800000006,,2.1336,,,,,51.4096,0
+Lockheed D-21,https://en.wikipedia.org/wiki/Lockheed_D-21,1376740431,0,,4989.516070000001,,5.7912,,,,1128.32896,,0
+Lockheed MQM-105 Aquila,https://en.wikipedia.org/wiki/Lockheed_MQM-105_Aquila,1323997977,0,,150.0,,3.89,,52.163122550000004,3.0,,58.333333333333336,0
+Lockheed Martin Cormorant,https://en.wikipedia.org/wiki/Lockheed_Martin_Cormorant,1371743861,0,,4082.33133,,4.8768,,,3.0,,,0
+Lockheed Martin Desert Hawk III,https://en.wikipedia.org/wiki/Lockheed_Martin_Desert_Hawk_III,1347302671,1,2.7215542200000002,3.62873896,,1.2192,,,1.5,,25.555555555555557,0
+Lockheed Martin Polecat,https://en.wikipedia.org/wiki/Lockheed_Martin_Polecat,1305937441,0,,4082.33133,,27.44,,,4.0,,,0
+Lockheed Martin RQ-170 Sentinel,https://en.wikipedia.org/wiki/Lockheed_Martin_RQ-170_Sentinel,1383238536,1,,,,11.58,,,6.0,,,0
+Lockheed Martin RQ-3 DarkStar,https://en.wikipedia.org/wiki/Lockheed_Martin_RQ-3_DarkStar,1378911847,0,1980.0,3860.0,,21.3,,,,128.88888888888889,,0
+Lockheed Martin Stalker,https://en.wikipedia.org/wiki/Lockheed_Martin_Stalker,1367873523,1,6.577089365,,7.937866475000001,3.048,,,2.0,,22.352,0
+Lockheed Martin Vectis,https://en.wikipedia.org/wiki/Lockheed_Martin_Vectis,1375747030,0,,,,11.5824,,,,,,0
+Lockheed Martin X-44 (UAV),https://en.wikipedia.org/wiki/Lockheed_Martin_X-44_%28UAV%29,1328142495,0,,,,,,,1.5,,78.67904,0
+Lockheed Martin X-56,https://en.wikipedia.org/wiki/Lockheed_Martin_X-56,1334146801,0,,,,8.382,,,,,61.736224,0
+Luch Korsar,https://en.wikipedia.org/wiki/Luch_Korsar,1337514425,0,200.0,,400.0,6.5,,,12.0,,41.66666666666667,0
+MBLE Épervier,https://en.wikipedia.org/wiki/MBLE_%C3%89pervier,1329543269,0,,142.0,,1.72,,,0.4166666666666667,138.88888888888889,,0
+MD-22,https://en.wikipedia.org/wiki/MD-22,1383156604,0,1000.0,4000.0,,,,,,,2401.388888888889,0
+MMIST CQ-10 SnowGoose,https://en.wikipedia.org/wiki/MMIST_CQ-10_SnowGoose,1358800987,0,,635.029318,,2.0726400000000003,,,19.0,,,0
+MTC MQ-17 SpyHawk,https://en.wikipedia.org/wiki/MTC_MQ-17_SpyHawk,1352284862,0,,39.0,,3.89,,,16.0,23.055555555555557,46.38888888888889,0
+Martin Marietta Model 845,https://en.wikipedia.org/wiki/Martin_Marietta_Model_845,1321129346,0,,1052.3342984,,17.9832,,,28.0,,67.056,0
+Martin X-23 PRIME,https://en.wikipedia.org/wiki/Martin_X-23_PRIME,1349788802,0,,405.51157878000004,,0.9144000000000001,,,,,,0
+Mikoyan Skat,https://en.wikipedia.org/wiki/Mikoyan_Skat,1366844163,0,,,,11.5,,,,,236.11111111111111,0
+Mirach 150,https://en.wikipedia.org/wiki/Mirach_150,1347713606,0,,345.0,,2.1,,,1.0,,237.5,0
+Mirach 26,https://en.wikipedia.org/wiki/Mirach_26,1372165590,0,,,408.0,4.73,3.0,,4.0,,50.0,0
+Mugin UAV Mugin,https://en.wikipedia.org/wiki/Mugin_UAV_Mugin,1362985676,1,34.0,,100.0,5.0,2.615,,7.0,35.0,40.0,0
+Multi-function Unmanned Helicopter (Georgia),https://en.wikipedia.org/wiki/Multi-function_Unmanned_Helicopter_%28Georgia%29,1365289593,0,442.0,,680.0,7.62,,,2.0,42.22222222222222,51.38888888888889,1
+NAMU KDN Gorgon,https://en.wikipedia.org/wiki/NAMU_KDN_Gorgon,1332603268,0,,,,3.048,2.58,,,,223.52,0
+NASA GL-10 Greased Lightning,https://en.wikipedia.org/wiki/NASA_GL-10_Greased_Lightning,1369990325,1,,,,3.048,,,,,,0
+NCSIST Albatross,https://en.wikipedia.org/wiki/NCSIST_Albatross,1374600255,0,,317.0,,8.6,,,12.0,,,0
+NCSIST Cardinal,https://en.wikipedia.org/wiki/NCSIST_Cardinal,1374599459,1,,5.5,,1.3,,,,,15.277777777777779,0
+NSRDC BQM-108,https://en.wikipedia.org/wiki/NSRDC_BQM-108,1333641023,0,,,254.01172720000002,2.1336,,,0.5,,178.816,0
+Naval Aircraft Factory TDN,https://en.wikipedia.org/wiki/Naval_Aircraft_Factory_TDN,1356075932,0,,,,14.630400000000002,,,,64.8208,,0
+Naval Research Laboratory Flyrt,https://en.wikipedia.org/wiki/Naval_Research_Laboratory_Flyrt,1321162731,1,,59.874192840000006,,2.4384,,,,,35.7632,0
+Nimbus EosXi,https://en.wikipedia.org/wiki/Nimbus_EosXi,1369059747,0,,,,6.5,,,3.0,8.333333333333334,13.88888888888889,0
+North American X-10,https://en.wikipedia.org/wiki/North_American_X-10,1257092074,0,11702.683146000001,15875.732950000001,19186.957251,8.5344,39.483792,,,,581.152,0
+Northrop Grumman Bat,https://en.wikipedia.org/wiki/Northrop_Grumman_Bat,1335545046,0,,158.7573295,,4.2672,,,18.0,,46.49216,0
+Northrop Grumman Firebird,https://en.wikipedia.org/wiki/Northrop_Grumman_Firebird,1383316867,0,,,2267.96185,19.812,,,40.0,,,0
+Northrop Grumman MQ-4C Triton,https://en.wikipedia.org/wiki/Northrop_Grumman_MQ-4C_Triton,1383459944,0,6781.0,14630.0,,39.9,,,30.0,,159.72222222222223,0
+Northrop Grumman MQ-8 Fire Scout,https://en.wikipedia.org/wiki/Northrop_Grumman_MQ-8_Fire_Scout,1383459952,0,940.3,,1430.0,8.4,,272.155422,8.0,,,0
+Northrop Grumman MQ-8C Fire Scout,https://en.wikipedia.org/wiki/Northrop_Grumman_MQ-8C_Fire_Scout,1372486652,0,,,2721.0,,,430.9127515,15.0,,,0
+Northrop Grumman RQ-180,https://en.wikipedia.org/wiki/Northrop_Grumman_RQ-180,1379517679,0,,,,39.624,,,24.0,,,0
+Northrop Grumman RQ-4 Global Hawk,https://en.wikipedia.org/wiki/Northrop_Grumman_RQ-4_Global_Hawk,1377672081,0,6781.205931500001,14628.3539325,,39.898320000000005,,,34.0,158.33333333333334,174.72222222222223,0
+Northrop Grumman Switchblade,https://en.wikipedia.org/wiki/Northrop_Grumman_Switchblade,1383459958,0,,,,61.0,,,,,,0
+Northrop Grumman X-47A Pegasus,https://en.wikipedia.org/wiki/Northrop_Grumman_X-47A_Pegasus,1340231323,0,1739.98033132,2212.16998849,2677.55576011,8.47344,35.9804183616,,,,,0
+Northrop Grumman X-47B,https://en.wikipedia.org/wiki/Northrop_Grumman_X-47B,1383316874,0,13080.0,,20185.0,18.92808,88.59,,,,,0
+Nostromo Yarará,https://en.wikipedia.org/wiki/Nostromo_Yarar%C3%A1,1245114577,0,15.5,,22.5,4.0,,,6.0,31.944444444444446,40.27777777777778,0
+OQ-15,https://en.wikipedia.org/wiki/OQ-15,1321164101,0,,70.0,,3.6,,,1.0,,72.22222222222223,0
+OQ-18,https://en.wikipedia.org/wiki/OQ-18,1321164105,0,,250.0,,4.6,,,1.0,,111.11111111111111,0
+Parrot AR.Drone,https://en.wikipedia.org/wiki/Parrot_AR.Drone,1380716094,1,0.36,,,,,,0.25,,5.0,0
+Parrot Anafi,https://en.wikipedia.org/wiki/Parrot_Anafi,1380605386,0,0.959,,1.45,,,,0.6333333333333333,,17.0,0
+Parrot Bebop,https://en.wikipedia.org/wiki/Parrot_Bebop,1383337331,1,,,,,,,0.2,,,0
+Pegaz,https://en.wikipedia.org/wiki/Pegaz,1321148780,0,120.0,,245.0,7.025,4.24,,10.0,36.111111111111114,44.44444444444444,0
+Piaggio P.180 Avanti,https://en.wikipedia.org/wiki/Piaggio_P.180_Avanti,1378444774,0,3798.83609875,,5488.467677000001,14.020800000000001,1124.126784,,,,,0
+Piper LBP,https://en.wikipedia.org/wiki/Piper_LBP,1345281293,0,,3129.787353,,10.0584,16.07222592,,,,134.112,0
+Pipistrel 801 eVTOL,https://en.wikipedia.org/wiki/Pipistrel_801_eVTOL,1321166446,1,,,,,,,,,78.232,0
+Pipistrel Nuuva V300,https://en.wikipedia.org/wiki/Pipistrel_Nuuva_V300,1325643817,1,,,1700.0,13.2,23.0,,,,,0
+Pratt-Read LBE,https://en.wikipedia.org/wiki/Pratt-Read_LBE,1345328457,0,,3237.74233706,,9.7536,18.76641408,,,,134.112,0
+Primoco UAV,https://en.wikipedia.org/wiki/Primoco_UAV,1382049546,0,,,150.0,4.85,,,15.0,,,0
+Qods Mohajer,https://en.wikipedia.org/wiki/Qods_Mohajer,1379693557,0,70.0,,85.0,3.8,,15.0,1.5,,55.55555555555556,0
+Qods Saeghe,https://en.wikipedia.org/wiki/Qods_Saeghe,1321145411,0,,,60.0,2.6,,,0.75,,69.44444444444444,0
+Qods Yasir,https://en.wikipedia.org/wiki/Qods_Yasir,1357151306,0,,19.0,,3.05,,,8.0,33.333333333333336,,0
+RAE Larynx,https://en.wikipedia.org/wiki/RAE_Larynx,1363318479,0,,,,,,,,,89.408,0
+Radioplane OQ-2,https://en.wikipedia.org/wiki/Radioplane_OQ-2,1340434977,0,,47.0,,3.73,,,1.0,,38.05555555555556,0
+Republic SD-3 Snooper,https://en.wikipedia.org/wiki/Republic_SD-3_Snooper,1332602285,0,,453.59237,,3.3528000000000002,,,0.5,,134.112,0
+Republic SD-4 Swallow,https://en.wikipedia.org/wiki/Republic_SD-4_Swallow,1321162742,0,,1587.5732950000001,,3.3528000000000002,,,,,,0
+RoboSeed Nano,https://en.wikipedia.org/wiki/RoboSeed_Nano,1321159102,1,0.1,,,0.3048,,,0.75,5.555555555555555,,0
+Rockwell HiMAT,https://en.wikipedia.org/wiki/Rockwell_HiMAT,1330735798,1,1529.0,1828.0,,4.75,,,,,544.4444444444445,0
+Ryan AQM-91 Firefly,https://en.wikipedia.org/wiki/Ryan_AQM-91_Firefly,1381156298,1,1725.0,2450.0,,14.5,,,,,226.38888888888889,0
+Ryan YQM-98 R-Tern,https://en.wikipedia.org/wiki/Ryan_YQM-98_R-Tern,1342774137,0,2540.0,6490.0,,24.75,32.24,,30.0,,,0
+Ryze Tello,https://en.wikipedia.org/wiki/Ryze_Tello,1372905554,0,,,,,,,0.21666666666666667,,8.0,0
+S-TEC Sentry,https://en.wikipedia.org/wiki/S-TEC_Sentry,1372171376,0,59.0,109.0,,3.35,,27.2155422,8.0,,48.611111111111114,0
+SAGEM Crecerelle,https://en.wikipedia.org/wiki/SAGEM_Crecerelle,1349188862,0,,120.0,,3.3,,,5.0,,66.66666666666667,0
+SATUMA Jasoos,https://en.wikipedia.org/wiki/SATUMA_Jasoos,1375951367,0,,,175.0,4.92,,,5.0,,36.111111111111114,0
+SQA eVTOL,https://en.wikipedia.org/wiki/SQA_eVTOL,1380967663,1,,,10.0,2.9,,,,16.944444444444446,30.0,0
+STC Orlan-10,https://en.wikipedia.org/wiki/STC_Orlan-10,1360888765,0,,,15.0,,,,16.0,,41.66666666666667,0
+Safran Patroller,https://en.wikipedia.org/wiki/Safran_Patroller,1380693901,0,,,,18.0,,,30.0,25.555555555555557,87.22222222222223,0
+Samad (UAV),https://en.wikipedia.org/wiki/Samad_%28UAV%29,1383804424,0,,,,4.5,,,,,55.55555555555556,0
+Schiebel Camcopter S-100,https://en.wikipedia.org/wiki/Schiebel_Camcopter_S-100,1375749521,0,110.0,,200.0,,,50.0,6.0,,,0
+Selex ES Falco,https://en.wikipedia.org/wiki/Selex_ES_Falco,1379166681,0,,,420.0,7.2,,150.13907447,14.0,44.44444444444444,60.0,0
+Shahbal,https://en.wikipedia.org/wiki/Shahbal,1249143724,0,9.5,17.5,,2.47,,,,36.111111111111114,50.0,0
+Shahed 129,https://en.wikipedia.org/wiki/Shahed_129,1380694394,0,,,,16.0,,400.0,24.0,41.66666666666667,,0
+Shahed 149 Gaza,https://en.wikipedia.org/wiki/Shahed_149_Gaza,1344188066,0,,,3200.0,21.0,,,24.0,94.44444444444444,,0
+Shahed 191,https://en.wikipedia.org/wiki/Shahed_191,1359867384,0,,500.0,500.0,7.31,,,4.5,83.33333333333334,97.22222222222223,0
+Shenyang WZ-9 Divine Eagle,https://en.wikipedia.org/wiki/Shenyang_WZ-9_Divine_Eagle,1331779784,0,,,,45.0,,,35.0,,,0
+Shield AI MQ-35 V-BAT,https://en.wikipedia.org/wiki/Shield_AI_MQ-35_V-BAT,1380808376,0,,74.84274105,,2.9260800000000002,,,12.0,,25.0,0
+Sikorsky Cypher,https://en.wikipedia.org/wiki/Sikorsky_Cypher,1314070753,0,,120.0,136.0,1.22,2.4,22.6796185,3.0,,26.944444444444446,0
+Simmonds Aerocessories OQ-11,https://en.wikipedia.org/wiki/Simmonds_Aerocessories_OQ-11,1321164174,0,,,,3.6,,,1.0,,27.77777777777778,0
+Singular SA03,https://en.wikipedia.org/wiki/Singular_SA03,1321152378,0,2150.0,,4000.0,14.0,,,,,,0
+Skydio 2,https://en.wikipedia.org/wiki/Skydio_2,1375435178,0,0.775,,,,,,0.45,,16.09344,0
+Skydio R1,https://en.wikipedia.org/wiki/Skydio_R1,1375435113,0,0.9979032140000001,,,,,,0.26666666666666666,,11.176,0
+Skydio R10,https://en.wikipedia.org/wiki/Skydio_R10,1375435440,0,0.785,,,,,,0.3333333333333333,,12.000000000000002,0
+Skydio X10,https://en.wikipedia.org/wiki/Skydio_X10,1382556306,0,2.11,,2.49,,,,0.6666666666666666,,20.0,0
+Skydio X2,https://en.wikipedia.org/wiki/Skydio_X2,1375435216,0,1.325,,1.525,,,,0.5833333333333334,,13.88888888888889,0
+Sojka III,https://en.wikipedia.org/wiki/Sojka_III,1321135970,0,,,145.0,4.12,,,,36.111111111111114,50.0,0
+Sokol Altius,https://en.wikipedia.org/wiki/Sokol_Altius,1327037259,0,6000.0,,8000.0,,,,24.0,,,0
+Sonex Aircraft Teros,https://en.wikipedia.org/wiki/Sonex_Aircraft_Teros,1321159385,0,,,,,,,,,,0
+StormShroud,https://en.wikipedia.org/wiki/StormShroud,1376377232,0,,,25.0,3.5,,,16.0,,,0
+Sukhoi S-70 Okhotnik-B,https://en.wikipedia.org/wiki/Sukhoi_S-70_Okhotnik-B,1380694335,0,10000.0,,25000.0,19.812,,,,,277.77777777777777,0
+Systems Integration Evaluation Remote Research Aircraft,https://en.wikipedia.org/wiki/Systems_Integration_Evaluation_Remote_Research_Aircraft,1321178450,0,,202.0,,6.1,,,10.0,,41.111111111111114,0
+TAI Aksungur,https://en.wikipedia.org/wiki/TAI_Aksungur,1365978493,0,1800.0,,3300.0,24.2,,,50.0,69.44444444444444,,0
+TAI Anka-3,https://en.wikipedia.org/wiki/TAI_Anka-3,1381080885,0,,,7250.0,13.1,,,10.0,,,0
+TAI Baykuş,https://en.wikipedia.org/wiki/TAI_Bayku%C5%9F,1345505296,0,100.0,,250.0,7.0,,,12.0,,55.55555555555556,0
+TAI Gözcü,https://en.wikipedia.org/wiki/TAI_G%C3%B6zc%C3%BC,1355341379,0,,,85.0,3.75,,,2.0,,47.22222222222222,0
+TAI Martı,https://en.wikipedia.org/wiki/TAI_Mart%C4%B1,1321154244,0,9.0,,12.0,2.0,,,1.0,,27.77777777777778,0
+TAI Pelikan,https://en.wikipedia.org/wiki/TAI_Pelikan,1360451442,0,20.0,,35.0,3.6,,,6.0,,33.333333333333336,0
+Tactical Robotics Cormorant,https://en.wikipedia.org/wiki/Tactical_Robotics_Cormorant,1357163087,0,771.0,,1406.0,,,,5.0,,,0
+Tadiran Mastiff,https://en.wikipedia.org/wiki/Tadiran_Mastiff,1375058457,0,72.0,138.0,,4.25,,37.0,7.5,,51.38888888888889,0
+Taylorcraft LBT,https://en.wikipedia.org/wiki/Taylorcraft_LBT,1321144735,0,,1782.6180141,,10.668000000000001,16.81545024,,,107.2896,140.37056,0
+Techno-Sud Vigilant,https://en.wikipedia.org/wiki/Techno-Sud_Vigilant,1384422757,0,,40.0,,,,,1.0,,27.77777777777778,0
+Teledyne Ryan 410,https://en.wikipedia.org/wiki/Teledyne_Ryan_410,1321132817,0,657.7,,,9.45,,136.077711,16.0,,,0
+Teledyne Ryan Scarab,https://en.wikipedia.org/wiki/Teledyne_Ryan_Scarab,1351590237,0,,1130.0,,3.35,,,,,269.44444444444446,0
+Tengden TB-001,https://en.wikipedia.org/wiki/Tengden_TB-001,1381032210,0,,,2800.0,20.0,,,35.0,,,0
+Tupolev Tu-123,https://en.wikipedia.org/wiki/Tupolev_Tu-123,1350551814,0,11450.0,35610.0,,8.41,,,,,750.0,0
+Tupolev Tu-141,https://en.wikipedia.org/wiki/Tupolev_Tu-141,1383578967,0,,6215.0,,3.88,10.0,,,277.77777777777777,305.55555555555554,0
+Tupolev Voron,https://en.wikipedia.org/wiki/Tupolev_Voron,1344736634,0,3900.0,,,5.8,37.0,,,,972.2222222222223,0
+Urban Aeronautics X-Hawk,https://en.wikipedia.org/wiki/Urban_Aeronautics_X-Hawk,1355654549,0,1170.0,,1930.0,2.5,,,,65.0,75.0,0
+VRT 300,https://en.wikipedia.org/wiki/VRT_300,1325256347,0,,,,,,,5.0,,50.0,0
+Vanilla UAV,https://en.wikipedia.org/wiki/Vanilla_UAV,1321168496,0,,272.155422,,10.972800000000001,3.7161216,,,,,0
+Vestel Karayel,https://en.wikipedia.org/wiki/Vestel_Karayel,1376492177,0,,,550.0,10.5,,,20.0,,,0
+Wingtra WingtraOne,https://en.wikipedia.org/wiki/Wingtra_WingtraOne,1357429455,1,3.6,,4.4,1.5,,,0.9166666666666666,15.277777777777779,,0
+XGAM-71 Buck Duck,https://en.wikipedia.org/wiki/XGAM-71_Buck_Duck,1329406364,0,,703.0681735000001,,4.2672,,,,,,0
+XMobots Apoena,https://en.wikipedia.org/wiki/XMobots_Apoena,1372807117,0,,,35.0,2.51,,,8.0,31.944444444444446,,0
+YIHA-III,https://en.wikipedia.org/wiki/YIHA-III,1377076507,0,,,,,,,,,,0
+Yamaha R-MAX,https://en.wikipedia.org/wiki/Yamaha_R-MAX,1330465011,0,64.0,,94.0,,,,1.0,,,0

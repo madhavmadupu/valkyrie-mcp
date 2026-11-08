@@ -14,7 +14,7 @@
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 [![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](http://mypy-lang.org/)
 
-[Quick Start](#-quick-start) • [MCP](#-use-it-from-claude-mcp) • [Military Checks](#-military-operating-checks) • [Validation](#-validation) • [Docs](#-documentation) • [Roadmap](#-roadmap)
+[Mission Lab](#️-mission-lab) • [Quick Start](#-quick-start) • [MCP](#-use-it-from-claude-mcp) • [Military Checks](#-military-operating-checks) • [Validation](#-validation) • [Docs](#-documentation) • [Roadmap](#-roadmap)
 
 </div>
 
@@ -40,6 +40,30 @@ VALKYRIE sizes a small electric fixed-wing aircraft from its mission (payload, e
 - **UAV builders**: RC, FPV and fixed-wing people who want to know the battery and wing size *before* the maiden flight
 - **Aerospace students**: textbook conceptual sizing (Raymer, Anderson, Mattingly) as readable, tested, validated Python
 - **Agent builders**: an MCP server, so an LLM can answer "is this mission physically possible?" with physics instead of a guess
+
+---
+
+## 🛰️ Mission Lab
+
+<div align="center">
+<img src="docs/assets/screenshots/lab-hot-and-high.png" width="100%" alt="VALKYRIE Mission Lab: hot-and-high out-and-back mission with animated flight profile, battery state of charge, power, constraint diagram and wind-direction energy chart">
+<br><em>Hot-and-high recon from a 1,800 m strip at 45 °C in 15 m/s wind: spiral climb, transit, loiter orbit and return, simulated step by step.</em>
+</div>
+
+```bash
+pip install -e .
+valkyrie-lab            # opens http://127.0.0.1:8765
+```
+
+Drag a slider and the aircraft is re-sized, re-simulated and re-plotted:
+an animated mission profile with live telemetry, battery state of charge and power over time,
+the constraint diagram with the design point, energy by segment, energy vs wind direction,
+the DoD UAS Group and every engineering check. Same engine as the library and MCP server.
+
+| | |
+|---|---|
+| ![Long-range delivery into a 10 m/s headwind](docs/assets/screenshots/lab-long-range-delivery.png) | ![Impossible mission rejected](docs/assets/screenshots/lab-impossible.png) |
+| *50 km into a 10 m/s headwind: 22.9 m/s airspeed, 12.9 m/s over the ground* | *10 kg for 10 hours: rejected, with the reason* |
 
 ---
 
@@ -175,7 +199,7 @@ Validation changed the model: the propeller efficiency default dropped from 0.80
 
 | Doc | What's in it |
 |---|---|
-| [Getting started](docs/getting-started.md) | Install, every mission input, reading the outputs, MCP setup, simulation |
+| [Getting started](docs/getting-started.md) | Install, Mission Lab, every mission input, reading the outputs, MCP setup, simulation |
 | [Theory](docs/theory.md) | Every equation, every default and where it comes from |
 | [Validation](docs/validation.md) | Evidence against standards, wind-tunnel data and independent tools |
 | [References](docs/references.md) | Books, papers and datasets |
@@ -192,6 +216,7 @@ Validation changed the model: the propeller efficiency default dropped from 0.80
 - [x] Time-stepping mission simulator
 - [x] Validation suite against USSA-1976, Skywalker X8, UIUC propeller data, AeroSandbox
 - [x] MCP server (`size_uav`, `find_components`)
+- [x] Mission Lab: interactive sizing, simulation and plots in the browser (`valkyrie-lab`)
 
 ### 🎯 Next (v0.2.0)
 - [ ] End-to-end validation against a real flight log
@@ -246,7 +271,7 @@ Apache License 2.0 - See [LICENSE](LICENSE) for details.
 
 - **Documentation:** [madhavmadupu.github.io/valkyrie-mcp](https://madhavmadupu.github.io/valkyrie-mcp)
 - **Issues/Features:** [GitHub Issues](https://github.com/madhavmadupu/valkyrie-mcp/issues)
-- **Author:** [Madhav Madupu](https://github.com/madhavmadupu) | [LinkedIn](#) | madhav@valkyrie-ai.dev
+- **Author:** [Madhav Madupu](https://github.com/madhavmadupu) | [LinkedIn](#) | madhav.madupu@gmail.com
 
 ---
 

@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VALKYRIE Mission Lab</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>⚡</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --page: #0d0d0d; --panel: #161615; --panel-2: #1c1c1b; --line: #2c2c2a; --line-2: #383835;
+  --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+  --good: #0ca30c; --warn: #fab219; --crit: #d03b3b;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--page); color: var(--ink); font-family: var(--sans); font-size: 14px; }
+button, input { font: inherit; color: inherit; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.label { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+/* header */
+header { display: flex; align-items: center; gap: 20px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 5; flex-wrap: wrap; }
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand b { font-weight: 700; letter-spacing: .14em; font-size: 16px; }
+.brand span { color: var(--muted); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
+.presets { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line-2); background: transparent; border-radius: 999px; padding: 5px 12px; font-size: 12px; color: var(--ink-2); cursor: pointer; }
+.chip:hover { border-color: var(--ink-2); color: var(--ink); }
+.chip[aria-pressed="true"] { border-color: var(--s1); color: var(--ink); background: rgba(57,135,229,.12); }
+.verdict { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 6px; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .06em; border: 1px solid var(--line-2); }
+.pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.pill.ok { border-color: rgba(12,163,12,.6); } .pill.ok .dot { background: var(--good); box-shadow: 0 0 8px var(--good); }
+.pill.bad { border-color: rgba(208,59,59,.7); } .pill.bad .dot { background: var(--crit); box-shadow: 0 0 8px var(--crit); }
+
+/* layout */
+.app { display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: calc(100vh - 57px); }
+aside { border-right: 1px solid var(--line); padding: 16px; background: var(--panel); display: flex; flex-direction: column; gap: 18px; }
+main { padding: 16px; display: grid; gap: 14px; grid-template-columns: repeat(12, minmax(0, 1fr)); align-content: start; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-width: 0; }
+.card h2 { margin: 0 0 10px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+.card h2 small { color: var(--muted); font-weight: 500; letter-spacing: .04em; text-transform: none; }
+.span-12 { grid-column: span 12; } .span-8 { grid-column: span 8; } .span-6 { grid-column: span 6; } .span-4 { grid-column: span 4; }
+
+/* inputs */
+fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 12px; }
+legend { padding: 0; margin-bottom: 4px; }
+.field { display: grid; gap: 5px; }
+.field .row { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; color: var(--ink-2); }
+.field .row output { font-family: var(--mono); color: var(--ink); font-size: 12px; }
+input[type=range] { width: 100%; accent-color: var(--s1); height: 18px; margin: 0; }
+.toggle { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--ink-2); }
+.switch { position: relative; width: 36px; height: 20px; }
+.switch input { opacity: 0; width: 100%; height: 100%; position: absolute; margin: 0; cursor: pointer; }
+.switch span { position: absolute; inset: 0; border-radius: 999px; background: var(--line-2); transition: .15s; pointer-events: none; }
+.switch span::after { content: ""; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; border-radius: 50%; background: var(--ink); transition: .15s; }
+.switch input:checked + span { background: var(--s1); }
+.switch input:checked + span::after { transform: translateX(16px); }
+.switch input:focus-visible + span { outline: 2px solid var(--s1); outline-offset: 2px; }
+.engine { margin-top: auto; font-size: 11px; color: var(--muted); line-height: 1.5; border-top: 1px solid var(--line); padding-top: 12px; }
+
+/* KPIs */
+.kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.kpi .v { font-family: var(--mono); font-size: 24px; font-weight: 600; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.kpi .v small { font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 3px; }
+.kpi .sub { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* profile */
+.profile-wrap { position: relative; }
+#profile { width: 100%; height: 300px; display: block; border-radius: 8px; background: radial-gradient(ellipse at 50% 0%, #1b2330 0%, #121416 70%); }
+.telemetry { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 10px; }
+.telemetry div { background: var(--panel-2); padding: 8px 10px; }
+.telemetry .v { font-family: var(--mono); font-size: 16px; margin-top: 3px; font-variant-numeric: tabular-nums; }
+.controls { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.btn { border: 1px solid var(--line-2); background: var(--panel-2); border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 12px; font-family: var(--mono); }
+.btn:hover { border-color: var(--ink-2); }
+.btn:focus-visible, .chip:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+#scrub { flex: 1; }
+#clock { font-family: var(--mono); font-size: 12px; color: var(--ink-2); min-width: 120px; text-align: right; }
+
+.chart { position: relative; height: 230px; }
+.chart.tall { height: 270px; }
+
+/* energy breakdown */
+.seglist { display: grid; gap: 6px; margin-top: 10px; font-size: 12px; }
+.seglist div { display: grid; grid-template-columns: 12px 1fr auto auto; gap: 8px; align-items: center; }
+.seglist i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.seglist .mono { color: var(--ink-2); }
+
+/* checks */
+.checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 18px; font-size: 12px; }
+.check { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: start; padding: 6px 0; border-bottom: 1px solid var(--line); color: var(--ink-2); }
+.check b { font-family: var(--mono); font-size: 12px; }
+.check.ok b { color: var(--good); } .check.warning b { color: var(--warn); } .check.error b { color: var(--crit); }
+.assume { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 10px; line-height: 1.7; }
+.reason { font-family: var(--mono); color: #f2a6a6; background: rgba(208,59,59,.08); border: 1px solid rgba(208,59,59,.4); border-radius: 8px; padding: 12px 14px; line-height: 1.5; }
+.hidden { display: none !important; }
+
+@media (max-width: 1200px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } .span-4 { grid-column: span 6; } }
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; } aside { border-right: 0; border-bottom: 1px solid var(--line); }
+  main { padding: 12px 16px; } .span-8, .span-6, .span-4 { grid-column: span 12; }
+  .telemetry { grid-template-columns: repeat(3, minmax(0, 1fr)); } .checks { grid-template-columns: 1fr; }
+  .verdict { margin-left: 0; }
+}
+@media (max-width: 520px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>⚡ VALKYRIE</b><span>Mission Lab</span></div>
+  <div class="presets" id="presets" role="group" aria-label="Mission presets"></div>
+  <div class="verdict" aria-live="polite">
+    <span class="pill" id="status"><span class="dot"></span><span id="status-text">—</span></span>
+    <span class="pill" id="group">DoD GROUP —</span>
+  </div>
+</header>
+
+<div class="app">
+  <aside>
+    <fieldset>
+      <legend class="label">Mission</legend>
+      <div id="f-mission"></div>
+    </fieldset>
+    <fieldset>
+      <legend class="label">Field &amp; atmosphere</legend>
+      <div id="f-field"></div>
+    </fieldset>
+    <fieldset>
+      <legend class="label">Aircraft &amp; battery</legend>
+      <div id="f-aircraft"></div>
+    </fieldset>
+    <p class="engine">Physics: constraint analysis, battery energy budget and time-stepping simulation from the
+      <span class="mono">valkyrie</span> engine. Validated against USSA-1976, Skywalker X8 wind-tunnel data and
+      UIUC propeller data.</p>
+  </aside>
+
+  <main>
+    <div class="span-12 kpis" id="kpis"></div>
+
+    <div class="card span-12 hidden" id="reason-card"><h2>Mission not feasible</h2><div class="reason" id="reason"></div></div>
+
+    <section class="card span-12" id="profile-card">
+      <h2>Mission profile <small id="profile-sub"></small></h2>
+      <div class="profile-wrap"><canvas id="profile" aria-label="Animated side view of the mission profile"></canvas></div>
+      <div class="controls">
+        <button class="btn" id="play" aria-label="Play or pause the simulation">❚❚ PAUSE</button>
+        <button class="btn" id="speed" aria-label="Playback speed">SPEED 1×</button>
+        <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Mission time">
+        <span id="clock">T+00:00</span>
+      </div>
+      <div class="telemetry" id="telemetry"></div>
+    </section>
+
+    <section class="card span-6 needs-sim"><h2>Battery state of charge <small>% remaining</small></h2><div class="chart"><canvas id="c-soc"></canvas></div></section>
+    <section class="card span-6 needs-sim"><h2>Battery power <small>W</small></h2><div class="chart"><canvas id="c-power"></canvas></div></section>
+
+    <section class="card span-4" id="constraint-card"><h2>Constraint diagram <small>T/W vs W/S</small></h2><div class="chart tall"><canvas id="c-constraint"></canvas></div></section>
+    <section class="card span-4 needs-sim"><h2>Energy by segment <small id="energy-total"></small></h2><div class="chart" style="height:120px"><canvas id="c-energy"></canvas></div><div class="seglist" id="seglist"></div></section>
+    <section class="card span-4 needs-sim"><h2>Energy vs wind direction <small>0° = headwind out</small></h2><div class="chart tall"><canvas id="c-wind"></canvas></div></section>
+
+    <section class="card span-12 needs-sim"><h2>Engineering checks <small id="checks-sub"></small></h2><div class="checks" id="checks"></div><div class="assume" id="assume"></div></section>
+  </main>
+</div>
+
+<script>
+const COLORS = { climb: "#c98500", transit_out: "#3987e5", loiter: "#199e70", transit_back: "#d55181" };
+const SEG_LABEL = { climb: "Climb", transit_out: "Transit out", loiter: "Loiter", transit_back: "Transit back" };
+const INK = "#f0efec", INK2 = "#c3c2b7", MUTED = "#898781", GRID = "#2c2c2a";
+
+const FIELDS = {
+  "f-mission": [
+    ["payload_kg", "Payload", "kg", 0.1, 15, 0.05],
+    ["endurance_minutes", "Loiter time", "min", 0, 600, 5],
+    ["range_km", "Transit distance", "km", 0, 150, 1],
+    ["round_trip", "Out-and-back", "toggle"],
+    ["cruise_altitude_m", "Cruise altitude", "m MSL", 0, 6000, 50],
+  ],
+  "f-field": [
+    ["takeoff_distance_m", "Takeoff ground roll", "m", 20, 400, 1],
+    ["field_elevation_m", "Field elevation", "m MSL", 0, 4000, 50],
+    ["temperature_celsius", "Design-day temperature", "°C", -30, 50, 1],
+    ["max_wind_speed_ms", "Wind", "m/s", 0, 25, 0.5],
+  ],
+  "f-aircraft": [
+    ["max_stall_speed_ms", "Max stall speed", "m/s", 6, 25, 0.5],
+    ["battery_wh_per_kg", "Battery energy density", "Wh/kg", 80, 350, 5],
+  ],
+};
+
+const PRESETS = {
+  "Tactical ISR": { payload_kg: 0.91, endurance_minutes: 45, range_km: 0, round_trip: false, cruise_altitude_m: 300, takeoff_distance_m: 76, field_elevation_m: 0, temperature_celsius: 15, max_wind_speed_ms: 10, max_stall_speed_ms: 12, battery_wh_per_kg: 150 },
+  "Recon out-and-back": { payload_kg: 1.5, endurance_minutes: 30, range_km: 20, round_trip: true, cruise_altitude_m: 400, takeoff_distance_m: 120, field_elevation_m: 0, temperature_celsius: 15, max_wind_speed_ms: 8, max_stall_speed_ms: 12, battery_wh_per_kg: 150 },
+  "Long-range delivery": { payload_kg: 2, endurance_minutes: 0, range_km: 50, round_trip: false, cruise_altitude_m: 400, takeoff_distance_m: 150, field_elevation_m: 0, temperature_celsius: 15, max_wind_speed_ms: 10, max_stall_speed_ms: 13, battery_wh_per_kg: 200 },
+  "Hot & high": { payload_kg: 0.91, endurance_minutes: 45, range_km: 10, round_trip: true, cruise_altitude_m: 2100, takeoff_distance_m: 76, field_elevation_m: 1800, temperature_celsius: 45, max_wind_speed_ms: 15, max_stall_speed_ms: 12, battery_wh_per_kg: 150 },
+  "Impossible": { payload_kg: 10, endurance_minutes: 600, range_km: 0, round_trip: false, cruise_altitude_m: 5000, takeoff_distance_m: 50, field_elevation_m: 0, temperature_celsius: 15, max_wind_speed_ms: 10, max_stall_speed_ms: 12, battery_wh_per_kg: 150 },
+};
+
+const state = { inputs: { ...PRESETS["Recon out-and-back"] }, result: null, t: 0, playing: true, speed: 1, last: null };
+const $ = (id) => document.getElementById(id);
+const fmt = (v, d = 1) => (v == null || !isFinite(v) ? "—" : Number(v).toFixed(d));
+const mmss = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+
+/* ---------- inputs ---------- */
+function buildInputs() {
+  for (const [box, fields] of Object.entries(FIELDS)) {
+    const el = $(box);
+    for (const [key, label, unit, min, max, step] of fields) {
+      const wrap = document.createElement("div");
+      if (unit === "toggle") {
+        wrap.className = "toggle";
+        wrap.innerHTML = `<span>${label}</span><label class="switch"><input type="checkbox" id="in-${key}" aria-label="${label}"><span></span></label>`;
+      } else {
+        wrap.className = "field";
+        wrap.innerHTML = `<div class="row"><label for="in-${key}">${label}</label><output id="out-${key}"></output></div>
+          <input type="range" id="in-${key}" min="${min}" max="${max}" step="${step}">`;
+      }
+      el.appendChild(wrap);
+      const input = wrap.querySelector("input");
+      input.addEventListener("input", () => {
+        state.inputs[key] = input.type === "checkbox" ? input.checked : Number(input.value);
+        syncOutputs(); markPreset(null); scheduleRun();
+      });
+    }
+  }
+  const presets = $("presets");
+  for (const name of Object.keys(PRESETS)) {
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = name; b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", () => { state.inputs = { ...PRESETS[name] }; syncInputs(); markPreset(name); run(); });
+    presets.appendChild(b);
+  }
+}
+function unitOf(key) { for (const f of Object.values(FIELDS)) for (const x of f) if (x[0] === key) return x[2]; }
+function syncInputs() {
+  for (const [key, v] of Object.entries(state.inputs)) {
+    const el = $(`in-${key}`); if (!el) continue;
+    if (el.type === "checkbox") el.checked = v; else el.value = v;
+  }
+  syncOutputs();
+}
+function syncOutputs() {
+  for (const [key, v] of Object.entries(state.inputs)) {
+    const o = $(`out-${key}`); if (!o) continue;
+    const off = (key === "endurance_minutes" || key === "range_km") && v === 0;
+    o.textContent = off ? "off" : `${v} ${unitOf(key)}`;
+  }
+}
+function markPreset(name) { for (const b of $("presets").children) b.setAttribute("aria-pressed", String(b.textContent === name)); }
+
+/* ---------- API ---------- */
+let timer = null;
+function scheduleRun() { clearTimeout(timer); timer = setTimeout(run, 250); }
+async function run() {
+  const i = state.inputs;
+  const body = { ...i, endurance_minutes: i.endurance_minutes || null, range_km: i.range_km || null };
+  const res = await fetch("/api/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  state.result = await res.json();
+  state.t = 0; state.playing = true;
+  render();
+}
+
+/* ---------- charts ---------- */
+Chart.defaults.color = INK2; Chart.defaults.font.family = "Inter, system-ui, sans-serif"; Chart.defaults.font.size = 11;
+Chart.defaults.borderColor = GRID; Chart.defaults.animation = false;
+Chart.defaults.plugins.tooltip.backgroundColor = "#222220"; Chart.defaults.plugins.tooltip.borderColor = "#383835";
+Chart.defaults.plugins.tooltip.borderWidth = 1; Chart.defaults.plugins.tooltip.titleFont = { family: "JetBrains Mono" };
+Chart.defaults.plugins.tooltip.bodyFont = { family: "JetBrains Mono" };
+
+const cursorPlugin = {  // vertical "now" line and segment bands on time charts
+  id: "missionTime",
+  beforeDatasetsDraw(chart) {
+    const segs = state.result?.lab?.segments; if (!segs) return;
+    const { ctx, chartArea: a, scales: { x } } = chart;
+    ctx.save();
+    for (const s of segs) {
+      const x0 = x.getPixelForValue(s.start_s / 60), x1 = x.getPixelForValue(s.end_s / 60);
+      ctx.fillStyle = COLORS[s.name] + "14"; ctx.fillRect(x0, a.top, x1 - x0, a.bottom - a.top);
+      ctx.fillStyle = MUTED; ctx.font = "600 10px Inter"; ctx.textBaseline = "top";
+      const label = SEG_LABEL[s.name].toUpperCase();
+      if (ctx.measureText(label).width + 12 < x1 - x0) ctx.fillText(label, x0 + 6, a.top + 4);
+    }
+    ctx.restore();
+  },
+  afterDatasetsDraw(chart) {
+    if (!state.result?.lab?.trace) return;
+    const { ctx, chartArea: a, scales: { x } } = chart;
+    const px = x.getPixelForValue(state.t / 60);
+    ctx.save(); ctx.strokeStyle = INK; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(px, a.top); ctx.lineTo(px, a.bottom); ctx.stroke(); ctx.restore();
+  },
+};
+
+const timeAxis = { type: "linear", title: { display: true, text: "Mission time (min)", color: MUTED }, grid: { color: GRID }, ticks: { color: MUTED } };
+const charts = {};
+function makeCharts() {
+  charts.soc = new Chart($("c-soc"), {
+    type: "line",
+    plugins: [cursorPlugin],
+    data: { datasets: [{ label: "State of charge", data: [], borderColor: "#3987e5", borderWidth: 2, pointRadius: 0, fill: "origin",
+      backgroundColor: (c) => { const g = c.chart.ctx.createLinearGradient(0, c.chart.chartArea?.top || 0, 0, c.chart.chartArea?.bottom || 200); g.addColorStop(0, "rgba(57,135,229,.35)"); g.addColorStop(1, "rgba(57,135,229,0)"); return g; } }] },
+    options: { maintainAspectRatio: false, parsing: false, interaction: { mode: "nearest", axis: "x", intersect: false },
+      scales: { x: timeAxis, y: { min: 0, max: 100, ticks: { callback: (v) => v + "%", color: MUTED }, grid: { color: GRID } } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { title: (i) => `T+${fmt(i[0].parsed.x, 1)} min`, label: (i) => ` ${fmt(i.parsed.y, 1)}% remaining` } } } },
+  });
+  charts.power = new Chart($("c-power"), {
+    type: "line",
+    plugins: [cursorPlugin],
+    data: { datasets: [{ label: "Battery power", data: [], borderColor: "#d95926", borderWidth: 2, pointRadius: 0, stepped: true }] },
+    options: { maintainAspectRatio: false, parsing: false, interaction: { mode: "nearest", axis: "x", intersect: false },
+      scales: { x: timeAxis, y: { beginAtZero: true, ticks: { callback: (v) => v + " W", color: MUTED }, grid: { color: GRID } } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { title: (i) => `T+${fmt(i[0].parsed.x, 1)} min`, label: (i) => ` ${fmt(i.parsed.y, 0)} W` } } } },
+  });
+  charts.constraint = new Chart($("c-constraint"), {
+    type: "line",
+    data: { datasets: [] },
+    options: { maintainAspectRatio: false, parsing: false,
+      scales: { x: { type: "linear", title: { display: true, text: "Wing loading W/S (N/m²)", color: MUTED }, grid: { color: GRID }, ticks: { color: MUTED } },
+                y: { min: 0, max: 0.8, title: { display: true, text: "Thrust-to-weight T/W", color: MUTED }, grid: { color: GRID }, ticks: { color: MUTED } } },
+      plugins: { legend: { position: "bottom", labels: { boxWidth: 12, boxHeight: 2, color: INK2, filter: (l) => !l.text.startsWith("_"),
+        generateLabels: (c) => Chart.defaults.plugins.legend.labels.generateLabels(c).map((l) => (l.text === "Design point" ? { ...l, fillStyle: INK, strokeStyle: INK, lineWidth: 0 } : l)) } },
+        tooltip: { callbacks: { label: (i) => ` ${i.dataset.label}: W/S ${fmt(i.parsed.x, 0)}, T/W ${fmt(i.parsed.y, 3)}` } } } },
+  });
+  charts.energy = new Chart($("c-energy"), {
+    type: "bar",
+    data: { labels: ["Energy"], datasets: [] },
+    options: { indexAxis: "y", maintainAspectRatio: false,
+      scales: { x: { stacked: true, ticks: { callback: (v) => v + " Wh", color: MUTED, maxRotation: 0, autoSkipPadding: 12 }, grid: { color: GRID } }, y: { stacked: true, display: false } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (i) => ` ${i.dataset.label}: ${fmt(i.parsed.x, 1)} Wh` } } } },
+  });
+  charts.wind = new Chart($("c-wind"), {
+    type: "radar",
+    data: { labels: [], datasets: [{ label: "Mission energy", data: [], borderColor: "#199e70", backgroundColor: "rgba(25,158,112,.18)", borderWidth: 2, pointRadius: 2, pointBackgroundColor: "#199e70" }] },
+    options: { maintainAspectRatio: false,
+      scales: { r: { grid: { color: GRID }, angleLines: { color: GRID }, pointLabels: { color: MUTED, font: { size: 10 } }, ticks: { color: MUTED, backdropColor: "transparent", callback: (v) => v + " Wh" } } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { title: (i) => `Wind from ${i[0].label}`, label: (i) => ` ${fmt(i.parsed.r, 1)} Wh` } } } },
+  });
+}
+
+/* ---------- render ---------- */
+function render() {
+  const r = state.result; const ok = r.feasible; const lab = r.lab || {};
+  $("status").className = "pill " + (ok ? "ok" : "bad");
+  $("status-text").textContent = ok ? "FEASIBLE" : "NOT FEASIBLE";
+  $("group").textContent = r.dod_uas_group ? `DoD GROUP ${r.dod_uas_group}` : "DoD GROUP —";
+  $("reason-card").classList.toggle("hidden", !r.reason);
+  $("reason").textContent = r.reason || "";
+  $("profile-card").classList.toggle("hidden", !lab.trace);
+  for (const el of document.querySelectorAll(".needs-sim")) el.classList.toggle("hidden", !lab.trace);
+  $("constraint-card").classList.toggle("span-4", !!lab.trace);
+  $("constraint-card").classList.toggle("span-8", !lab.trace);
+  $("constraint-card").classList.toggle("hidden", !lab.constraints);
+
+  const d = r.design;
+  const totalT = lab.segments ? lab.segments.at(-1).end_s : 0;
+  const kp = [
+    ["Gross weight", d && fmt(d.gross_weight_kg, 2), "kg", d && `${fmt(d.gross_weight_kg * 2.20462, 1)} lb`],
+    ["Wingspan", d && fmt(r.wingspan_m, 2), "m", d && `${fmt(d.wing_area_m2, 3)} m² wing`],
+    ["Battery", d && fmt(d.battery_mass_kg, 2), "kg", d && `${fmt(r.battery_energy_wh, 0)} Wh`],
+    ["Thrust", d && fmt(d.required_thrust_n, 1), "N", d && `T/W ${fmt(d.thrust_to_weight, 2)}`],
+    ["Wing loading", d && fmt(d.wing_loading_pa, 0), "N/m²", d && `stall ${fmt(r.mission?.max_stall_speed_ms, 0)} m/s cap`],
+    ["Mission time", d && mmss(totalT), "", d && `cruise ${fmt(r.cruise_speed_ms, 1)} m/s`],
+  ];
+  $("kpis").innerHTML = kp.map(([l, v, u, s]) => `<div class="kpi"><div class="label">${l}</div><div class="v">${v ?? "—"}<small>${v ? u : ""}</small></div><div class="sub">${s ?? "&nbsp;"}</div></div>`).join("");
+
+  // time series
+  const tr = lab.trace || [];
+  const cap = lab.capacity_wh || 1;
+  charts.soc.data.datasets[0].data = tr.map((p) => ({ x: p.t_s / 60, y: Math.max(0, 100 * (1 - p.energy_wh / cap)) }));
+  charts.power.data.datasets[0].data = tr.map((p) => ({ x: p.t_s / 60, y: p.power_w }));
+  for (const c of [charts.soc, charts.power]) { c.options.scales.x.max = totalT / 60 || 1; c.options.scales.x.min = 0; c.update(); }
+
+  // constraint diagram
+  const cc = lab.constraints;
+  if (cc) {
+    const pts = (k) => cc.ws.map((w, i) => ({ x: w, y: cc[k][i] }));
+    const env = cc.ws.map((w, i) => ({ x: w, y: Math.max(cc.takeoff[i], cc.cruise[i], cc.climb[i]) })).filter((p) => p.x <= cc.ws_max);
+    charts.constraint.data.datasets = [
+      { label: "_feasible", data: env, borderWidth: 0, pointRadius: 0, fill: "end", backgroundColor: "rgba(12,163,12,.10)" },
+      { label: "Takeoff", data: pts("takeoff"), borderColor: "#3987e5", borderWidth: 2, pointRadius: 0 },
+      { label: "Cruise", data: pts("cruise"), borderColor: "#d95926", borderWidth: 2, pointRadius: 0, borderDash: [6, 4] },
+      { label: "Climb", data: pts("climb"), borderColor: "#c98500", borderWidth: 2, pointRadius: 0, borderDash: [2, 3] },
+      { label: "Stall cap", data: [{ x: cc.ws_max, y: 0 }, { x: cc.ws_max, y: 0.8 }], borderColor: "#d55181", borderWidth: 2, pointRadius: 0 },
+      { label: "T/W limit", data: [{ x: cc.ws[0], y: cc.tw_limit }, { x: cc.ws.at(-1), y: cc.tw_limit }], borderColor: MUTED, borderWidth: 1, pointRadius: 0, borderDash: [4, 4] },
+    ];
+    if (d) charts.constraint.data.datasets.push({ label: "Design point", type: "scatter", data: [{ x: d.wing_loading_pa, y: d.thrust_to_weight }],
+      pointRadius: 7, pointHoverRadius: 9, backgroundColor: INK, borderColor: INK, pointBackgroundColor: INK, pointBorderColor: "#0d0d0d", pointBorderWidth: 2, pointStyle: "rectRot" });
+    charts.constraint.options.scales.x.min = 0; charts.constraint.options.scales.x.max = Math.ceil(cc.ws.at(-1) / 20) * 20;
+  } else charts.constraint.data.datasets = [];
+  charts.constraint.update();
+
+  // energy by segment
+  const segs = lab.segments || [];
+  charts.energy.data.datasets = segs.map((s) => ({ label: SEG_LABEL[s.name], data: [s.energy_wh], backgroundColor: COLORS[s.name], borderColor: "#161615", borderWidth: { right: 2 }, borderSkipped: false, borderRadius: 3 }));
+  charts.energy.update();
+  const totalE = segs.reduce((a, s) => a + s.energy_wh, 0);
+  $("energy-total").textContent = segs.length ? `${fmt(totalE, 1)} Wh total` : "";
+  $("seglist").innerHTML = segs.map((s) => `<div><i style="background:${COLORS[s.name]}"></i><span>${SEG_LABEL[s.name]}</span><span class="mono">${mmss(s.end_s - s.start_s)}</span><span class="mono">${fmt(s.energy_wh, 1)} Wh · ${fmt(100 * s.energy_wh / totalE, 0)}%</span></div>`).join("");
+
+  // wind sweep
+  const sw = lab.sweep || [];
+  charts.wind.data.labels = sw.map((p) => p.deg + "°");
+  charts.wind.data.datasets[0].data = sw.map((p) => p.energy_wh);
+  const rmin = Math.min(...sw.map((p) => p.energy_wh));
+  charts.wind.options.scales.r.suggestedMin = sw.length ? Math.floor(rmin * 0.9) : 0;
+  charts.wind.update();
+
+  // checks
+  const checks = lab.checks_all || r.checks || [];
+  $("checks").innerHTML = checks.map((c) => {
+    const cls = c.valid ? "ok" : c.severity; const icon = c.valid ? "✓" : c.severity === "error" ? "✕" : "!";
+    return `<div class="check ${cls}"><b aria-label="${c.valid ? "pass" : c.severity}">${icon}</b><span>${c.message}</span></div>`;
+  }).join("");
+  const fails = checks.filter((c) => !c.valid).length;
+  $("checks-sub").textContent = checks.length ? `${checks.length - fails} pass · ${fails} flagged` : "";
+  const a = r.assumptions;
+  $("assume").textContent = a ? `ASSUMPTIONS  CD0 ${a.cd0} · AR ${a.aspect_ratio} · e ${a.oswald_efficiency} · CLmax ${a.cl_max} · We/W0 ${fmt(a.empty_weight_fraction, 2)} · battery ${a.battery_wh_per_kg} Wh/kg · η_prop 0.70` : "";
+
+  $("profile-sub").textContent = r.mission ? `wind ${r.mission.max_wind_speed_ms} m/s · ${r.mission.round_trip ? "out-and-back" : "one-way"} · ${r.mission.temperature_celsius} °C` : "";
+  drawFrame();
+}
+
+/* ---------- profile animation ---------- */
+const prof = $("profile"), pctx = prof.getContext("2d");
+function sizeCanvas() { const dpr = window.devicePixelRatio || 1; const r = prof.getBoundingClientRect(); prof.width = r.width * dpr; prof.height = r.height * dpr; pctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+function sampleAt(t) {
+  const tr = state.result.lab.trace; let lo = 0, hi = tr.length - 1;
+  if (t <= tr[0].t_s) return tr[0];
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; (tr[m].t_s <= t ? (lo = m) : (hi = m)); }
+  const a = tr[lo], b = tr[hi], f = (t - a.t_s) / (b.t_s - a.t_s || 1);
+  return { ...a, t_s: t, distance_km: a.distance_km + f * (b.distance_km - a.distance_km), altitude_m: a.altitude_m + f * (b.altitude_m - a.altitude_m), energy_wh: a.energy_wh + f * (b.energy_wh - a.energy_wh) };
+}
+function orbitXY(p, orbitKm) {  // circling segments drawn as a notional tilted orbit around their station
+  if (p.segment !== "loiter" && p.segment !== "climb") return [p.distance_km, 0];
+  const a = (p.t_s / 90) * 2 * Math.PI;
+  return [p.distance_km + orbitKm * Math.sin(a), 9 * Math.cos(a)];
+}
+function drawFrame() {
+  const r = state.result; if (!r?.lab?.trace) return;
+  const tr = r.lab.trace, W = prof.clientWidth, H = prof.clientHeight, m = r.mission;
+  const range = m.range_km || 0, orbit = Math.max(range * 0.04, 0.6);
+  const xmin = -orbit * 1.8, xmax = Math.max(range, 0) + orbit * 1.8;
+  const hmin = m.field_elevation_m, hmax = Math.max(m.cruise_altitude_m, hmin + 50);
+  const pad = { l: 56, r: 24, t: 44, b: 34 };
+  const X = (km) => pad.l + ((km - xmin) / (xmax - xmin)) * (W - pad.l - pad.r);
+  const Y = (h) => H - pad.b - ((h - hmin) / ((hmax - hmin) * 1.25)) * (H - pad.t - pad.b);
+  pctx.clearRect(0, 0, W, H);
+
+  // grid + axes
+  pctx.font = "10px JetBrains Mono"; pctx.fillStyle = MUTED; pctx.strokeStyle = "#232426"; pctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) { const h = hmin + ((hmax - hmin) * 1.25 * i) / 4; const y = Y(h); pctx.beginPath(); pctx.moveTo(pad.l, y); pctx.lineTo(W - pad.r, y); pctx.stroke(); pctx.fillText(`${Math.round(h)} m`, 6, y + 3); }
+  const xticks = W < 600 ? 3 : 6; for (let i = 0; i <= xticks; i++) { const km = xmin + ((xmax - xmin) * i) / xticks; pctx.fillText(`${km.toFixed(km < 10 && km > -10 ? 1 : 0)} km`, X(km) - 14, H - 3); }
+
+  // ground
+  const gy = Y(hmin);
+  const grd = pctx.createLinearGradient(0, gy, 0, H); grd.addColorStop(0, "#26302a"); grd.addColorStop(1, "#121416");
+  pctx.fillStyle = grd; pctx.fillRect(pad.l, gy, W - pad.l - pad.r, H - pad.b - gy + 2);
+  pctx.strokeStyle = "#3b4a40"; pctx.beginPath(); pctx.moveTo(pad.l, gy); pctx.lineTo(W - pad.r, gy); pctx.stroke();
+
+  // sites
+  const site = (km, label) => { const x = X(km); pctx.fillStyle = INK2; pctx.beginPath(); pctx.moveTo(x, gy - 9); pctx.lineTo(x - 6, gy); pctx.lineTo(x + 6, gy); pctx.fill(); pctx.font = "600 10px Inter"; pctx.fillText(label, x - pctx.measureText(label).width / 2, gy + 13); };
+  site(0, "BASE"); if (range) site(range, m.endurance_hours ? "STATION" : "TARGET");
+
+  // wind arrows (headwind out: wind blows from station toward base)
+  const wind = m.max_wind_speed_ms;
+  if (wind > 0) {
+    pctx.strokeStyle = "rgba(195,194,183,.35)"; pctx.fillStyle = "rgba(195,194,183,.35)"; pctx.lineWidth = 1.2;
+    const drift = ((performance.now() / 1000) * wind * 6) % 80;
+    for (let row = 0; row < 2; row++) for (let x = W - pad.r - drift - row * 40; x > pad.l + 20; x -= 80) {
+      const y = pad.t - 22 + row * 12; pctx.beginPath(); pctx.moveTo(x, y); pctx.lineTo(x - 18, y); pctx.stroke();
+      pctx.beginPath(); pctx.moveTo(x - 18, y); pctx.lineTo(x - 13, y - 3); pctx.lineTo(x - 13, y + 3); pctx.fill();
+    }
+    pctx.fillStyle = INK2; pctx.font = "600 10px JetBrains Mono"; pctx.fillText(`WIND ${wind} m/s  ◀ headwind out`, W - pad.r - 190, pad.t - 30 + 36);
+  }
+
+  // full path (dim) then flown path by segment color
+  const P = (p) => { const [km, dy] = orbitXY(p, orbit); return [X(km), Y(p.altitude_m) + dy]; };
+  const path = (pts, style, width) => { pctx.strokeStyle = style; pctx.lineWidth = width; pctx.beginPath(); pts.forEach((p, i) => { const [x, y] = P(p); i ? pctx.lineTo(x, y) : pctx.moveTo(x, y); }); pctx.stroke(); };
+  path(tr, "rgba(240,239,236,.10)", 1.5);
+  const flown = tr.filter((p) => p.t_s <= state.t);
+  let segStart = 0;
+  for (let i = 1; i <= flown.length; i++) {
+    if (i === flown.length || flown[i].segment !== flown[segStart].segment) { path(flown.slice(Math.max(0, segStart - 1), i), COLORS[flown[segStart].segment], 2.2); segStart = i; }
+  }
+
+  // aircraft
+  const now = sampleAt(state.t), prev = sampleAt(Math.max(0, state.t - 6));
+  const [ax, ay] = P(now), [bx, by] = P(prev);
+  const ang = Math.atan2(ay - by, ax - bx || 0.001);
+  pctx.save(); pctx.translate(ax, ay); pctx.rotate(ang);
+  pctx.shadowColor = COLORS[now.segment]; pctx.shadowBlur = 14; pctx.fillStyle = INK;
+  pctx.beginPath(); pctx.moveTo(12, 0); pctx.lineTo(-8, -7); pctx.lineTo(-4, 0); pctx.lineTo(-8, 7); pctx.closePath(); pctx.fill();
+  pctx.restore();
+  pctx.fillStyle = COLORS[now.segment]; pctx.font = "600 10px JetBrains Mono";
+  const tag = SEG_LABEL[now.segment].toUpperCase(); pctx.fillText(tag, Math.min(ax + 12, W - pad.r - pctx.measureText(tag).width), ay - 12);
+
+  // telemetry
+  const cap = r.lab.capacity_wh;
+  const tel = [["Segment", SEG_LABEL[now.segment]], ["Altitude", `${fmt(now.altitude_m, 0)} m`], ["Airspeed", `${fmt(now.airspeed_ms, 1)} m/s`],
+    ["Ground speed", now.ground_speed_ms ? `${fmt(now.ground_speed_ms, 1)} m/s` : "circling"], ["Power", `${fmt(now.power_w, 0)} W`],
+    ["Battery", `${fmt(Math.max(0, 100 * (1 - now.energy_wh / cap)), 1)} %`]];
+  $("telemetry").innerHTML = tel.map(([l, v]) => `<div><div class="label">${l}</div><div class="v">${v}</div></div>`).join("");
+  const total = tr.at(-1).t_s;
+  $("clock").textContent = `T+${mmss(state.t)} / ${mmss(total)}`;
+  $("scrub").value = Math.round((1000 * state.t) / total);
+}
+function tick(ts) {
+  const r = state.result;
+  if (r?.lab?.trace) {
+    const total = r.lab.trace.at(-1).t_s;
+    if (state.playing && state.last != null) {
+      state.t += ((ts - state.last) / 1000) * (total / 20) * state.speed;  // whole mission in ~20 s at 1x
+      if (state.t >= total) state.t = 0;
+    }
+    drawFrame(); charts.soc.draw(); charts.power.draw();
+  }
+  state.last = ts; requestAnimationFrame(tick);
+}
+
+$("play").addEventListener("click", () => { state.playing = !state.playing; $("play").textContent = state.playing ? "❚❚ PAUSE" : "▶ PLAY"; });
+$("speed").addEventListener("click", () => { state.speed = state.speed >= 4 ? 0.5 : state.speed * 2; $("speed").textContent = `SPEED ${state.speed}×`; });
+$("scrub").addEventListener("input", (e) => { const r = state.result; if (!r?.lab?.trace) return; state.t = (e.target.value / 1000) * r.lab.trace.at(-1).t_s; });
+document.addEventListener("keydown", (e) => { if (e.code === "Space" && e.target === document.body) { e.preventDefault(); $("play").click(); } });
+window.addEventListener("resize", () => { sizeCanvas(); drawFrame(); });
+
+// URL params (?preset=Hot%20%26%20high&t=0.6&paused=1) make screenshots reproducible
+const qs = new URLSearchParams(location.search);
+buildInputs(); makeCharts(); sizeCanvas();
+const startPreset = qs.get("preset") && PRESETS[qs.get("preset")] ? qs.get("preset") : "Recon out-and-back";
+state.inputs = { ...PRESETS[startPreset] }; syncInputs(); markPreset(startPreset);
+run().then(() => {
+  if (qs.get("t") && state.result?.lab?.trace) state.t = Number(qs.get("t")) * state.result.lab.trace.at(-1).t_s;
+  if (qs.get("paused")) $("play").click();
+});
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>

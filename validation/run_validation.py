@@ -14,6 +14,7 @@ Studies:
 Downloads (UIUC) are cached in validation/.cache/ and parsed as plain numbers only.
 """
 
+import json
 import math
 import pathlib
 import sys
@@ -219,8 +220,119 @@ def study_simulation() -> dict:
     return {"fig": save(fig, "wind_sweep.png"), "rows": rows, "sweep": sweep}
 
 
+# ---------------------------------------------------------------- 6. real flight logs
+DATA = ROOT / "validation" / "data"
+# Applied Aeronautics Albatross: 3.0 m span, 10 kg MTOW, 4.4 kg dry (2018 datasheet); 0.684 m² wing,
+# 300/160 mm root/tip chord (designer's 2013 spec, same 740 mm fuselage as the production datasheet).
+ALB_SPAN, ALB_AREA, ALB_MASS = 3.0, 0.684, (6.5, 8.25, 10.0)
+ETA_TOTAL = PROPELLER_EFFICIENCY_TYPICAL * 0.85 * 0.95
+
+
+def albatross_power(v, rho, mass_kg, cd0=DEFAULT_CD0, e=DEFAULT_E):
+    """VALKYRIE's level-flight battery power for the Albatross: (D·V)/η with the parabolic polar."""
+    w = mass_kg * 9.80665
+    return (0.5 * rho * v**3 * ALB_AREA * cd0 + 2 * w**2 / (rho * v * math.pi * e * ALB_SPAN**2)) / ETA_TOTAL
+
+
+def study_flight_logs() -> dict:
+    import pandas as pd
+
+    win = pd.read_csv(DATA / "albatross_windows.csv")
+    flights = pd.read_csv(DATA / "albatross_flights.csv")
+    f = win.groupby("log_id").agg(v=("airspeed_ms", "median"), p=("power_w", "median"), rho=("rho", "median"),
+                                  vehicle=("vehicle_uuid", "first"), n=("power_w", "size"))
+    lo, mid, hi = (albatross_power(f.v, f.rho, m) for m in ALB_MASS)
+    f["ratio"] = f.p / mid
+    f["in_band"] = (f.p >= lo) & (f.p <= hi)
+    # Effective CD0 that would make the default model match each flight at the mid mass
+    induced = 2 * (ALB_MASS[1] * 9.80665) ** 2 / (f.rho * f.v * math.pi * DEFAULT_E * ALB_SPAN**2)
+    f["cd0_eff"] = (f.p * ETA_TOTAL - induced) / (0.5 * f.rho * f.v**3 * ALB_AREA)
+    per_vehicle = f.groupby("vehicle").ratio.median()
+    flights = flights.set_index("log_id").loc[f.index]
+    overhead = (flights.airborne_energy_wh * 3600 / flights.airborne_s) / f.p  # whole flight vs steady cruise
+
+    rho0 = float(f.rho.median())
+    vmax = float(max(26.0, win.airspeed_ms.max() + 1))
+    vv = np.linspace(12, vmax, 100)
+    fig, ax = plt.subplots(figsize=(7.5, 4.2))
+    ax.fill_between(vv, albatross_power(vv, rho0, ALB_MASS[0]), albatross_power(vv, rho0, ALB_MASS[2]),
+                    color=C3, alpha=0.18, linewidth=0, label=f"VALKYRIE, {ALB_MASS[0]}-{ALB_MASS[2]} kg")
+    ax.plot(vv, albatross_power(vv, rho0, ALB_MASS[1]), color=C3, label=f"VALKYRIE, {ALB_MASS[1]} kg")
+    ax.scatter(win.airspeed_ms, win.power_w, s=6, color=C1, alpha=0.18, linewidths=0, label="Steady 20 s windows")
+    ax.scatter(f.v, f.p, s=28, color=C2, edgecolors=SURFACE, linewidths=0.8, zorder=3, label="Flight medians")
+    ax.set(xlabel="True airspeed (m/s)", ylabel="Battery power (W)", xlim=(12, vmax),
+           ylim=(0, float(np.percentile(win.power_w, 99)) * 1.15),
+           title=f"Applied Aeronautics Albatross: {len(f)} real flights, {f.vehicle.nunique()} aircraft")
+    ax.legend(loc="upper left")
+    return {
+        "fig": save(fig, "albatross_flights.png"), "flights": len(f), "vehicles": int(f.vehicle.nunique()),
+        "windows": len(win), "scan": json.loads((DATA / "albatross_scan.json").read_text()),
+        "ratio_med": float(f.ratio.median()), "ratio_q": f.ratio.quantile([0.25, 0.75]).tolist(),
+        "vehicle_ratio_med": float(per_vehicle.median()), "vehicle_ratio_range": (float(per_vehicle.min()), float(per_vehicle.max())),
+        "in_band": float(f.in_band.mean()), "cd0_eff": float(f.cd0_eff.median()),
+        "v_med": float(f.v.median()), "p_med": float(f.p.median()), "overhead": float(overhead.median()),
+        "hours": float(flights.airborne_s.sum() / 3600),
+    }
+
+
+# ---------------------------------------------------------------- 7. manufacturer datasheets
+GEAR_KG = (0.0, 0.8)  # Penguin BE landing gear mass is not published; belly-landing endurance removes it
+
+
+def study_datasheets() -> dict:
+    import pandas as pd
+
+    from valkyrie.analysis.constraint_solver import ConstraintAnalyzer
+    from valkyrie.core.models import MissionRequirements
+
+    d = pd.read_csv(DATA / "uav_datasheets.csv").set_index("aircraft")
+    pen = d.loc["UAV Factory Penguin BE"]
+    alb = d.loc["Applied Aeronautics Albatross"]
+    sky = d.loc["Elbit Systems Skylark I-LEX"]
+    span, area = float(pen.span_m), float(pen.wing_area_m2)
+    polar = DragPolar(cd0=DEFAULT_CD0, k=1 / (math.pi * DEFAULT_E * span**2 / area))
+    rho = air_density(0)
+    endurance = []
+    for gear in GEAR_KG:
+        w = (pen.empty_kg - gear + pen.payload_kg) * 9.80665
+        for label, cl in (("published cruise, 22 m/s", None), ("best-range speed", polar.cl_for_max_ld),
+                          ("minimum-power speed", polar.cl_for_max_endurance)):
+            v = float(pen.cruise_ms) if cl is None else math.sqrt(2 * w / (rho * area * cl))
+            cl_v = w / (0.5 * rho * v**2 * area)
+            p = w * v / (polar.lift_to_drag_ratio(cl_v) * ETA_TOTAL)
+            endurance.append({"mass": w / 9.80665, "case": label, "v": v, "p": p, "minutes": pen.battery_wh / p * 60})
+    published_min = float(pen.endurance_h) * 60
+    at_cruise = [e["minutes"] for e in endurance if e["case"].startswith("published")]
+
+    # Empty-weight fraction without battery (VALKYRIE's We excludes the battery)
+    fractions = [
+        ("Applied Aeronautics Albatross", float(alb.empty_kg / alb.mtow_kg), "dry weight / MTOW, both published"),
+        ("UAV Factory Penguin BE", float((pen.empty_kg - pen.battery_wh / 150) / pen.mtow_kg),
+         "(empty incl. battery − 640 Wh at 150 Wh/kg) / MTOW; battery mass estimated"),
+    ]
+
+    sizing = []
+    for name, row, actual in (("UAV Factory Penguin BE", pen, pen.empty_kg + pen.payload_kg),
+                              ("Elbit Systems Skylark I-LEX", sky, sky.mtow_kg)):
+        m = MissionRequirements(payload_mass_kg=float(row.payload_kg), endurance_hours=float(row.endurance_h),
+                                takeoff_distance_m=100, cruise_altitude_m=300, max_wind_speed_ms=0)
+        pred = ConstraintAnalyzer(m).solve().gross_weight_kg
+        sizing.append({"name": name, "payload": float(row.payload_kg), "hours": float(row.endurance_h),
+                       "actual": float(actual), "pred": pred})
+
+    wiki = pd.read_csv(DATA / "uav_specs.csv")
+    wiki_w0 = wiki.mtow_kg.fillna(wiki.gross_kg)
+    return {
+        "endurance": endurance, "published_min": published_min,
+        "cruise_err": [100 * (m / published_min - 1) for m in at_cruise],
+        "fractions": fractions, "sizing": sizing,
+        "wiki_articles": len(wiki), "wiki_small_electric": int(((wiki.electric == 1) & (wiki_w0 <= 50)).sum()),
+        "clmax": (float(pen.cl_max_clean), float(pen.cl_max_flaps)),
+    }
+
+
 # ---------------------------------------------------------------- report
-def write_report(atm, x8, buildup, props, sim) -> None:
+def write_report(atm, x8, buildup, props, sim, logs, sheets) -> None:
     pct = lambda a, b: 100 * (a / b - 1)  # noqa: E731
     L = []
     L += [
@@ -245,6 +357,15 @@ def write_report(atm, x8, buildup, props, sim) -> None:
         f"| Battery energy budget | Time-stepping simulator | within {max(abs(r[3]) for r in sim['rows']):.2f}% on {len(sim['rows'])} missions |",
         "| Along-track wind is worst case | Simulator, 0-180° sweep | confirmed (worst at 0°) |",
         "| Battery-energy endurance method | Traub 2013, wind-tunnel flight | literature: within 3% of measured |",
+        f"| Cruise power, real aircraft | {logs['flights']} PX4 flight logs, {logs['vehicles']} Albatross UAVs | "
+        f"measured / predicted median {logs['ratio_med']:.2f} (IQR {logs['ratio_q'][0]:.2f}-{logs['ratio_q'][1]:.2f}) |",
+        f"| Endurance from battery energy | Penguin BE datasheet (640 Wh, 2.8 kg payload) | "
+        f"{min(sheets['cruise_err']):+.0f}% to {max(sheets['cruise_err']):+.0f}% vs published {sheets['published_min']:.0f} min |",
+        f"| CLmax default 1.4 | Penguin BE datasheet | published {sheets['clmax'][0]} clean, {sheets['clmax'][1]} flapped |",
+        "| Empty-weight fraction 0.50 | Albatross, Penguin BE datasheets | "
+        + ", ".join(f"{v:.2f}" for _, v, _ in sheets["fractions"]) + " |",
+        "| Whole sizing loop | Penguin BE, Skylark I-LEX datasheets | "
+        + ", ".join(f"{100 * (r['pred'] / r['actual'] - 1):+.0f}%" for r in sheets["sizing"]) + " takeoff weight |",
         "",
         "## 1. Atmosphere",
         "",
@@ -324,12 +445,88 @@ def write_report(atm, x8, buildup, props, sim) -> None:
         + ": wind along the track. Budgeting against along-track wind, as the sizing does, is therefore "
         "the worst case and not an underestimate.",
         "",
+        "## 6. Cruise power vs real flight logs (Applied Aeronautics Albatross)",
+        "",
+        f"Public PX4 flight logs from [PX4 Flight Review](https://review.px4.io) for airframe 2106, the "
+        f"Applied Aeronautics Albatross: {logs['scan']['logs_scanned']} logs scanned, {logs['flights']} usable flights "
+        f"from {logs['vehicles']} different aircraft, {logs['hours']:.0f} flight hours, {logs['windows']:,} steady "
+        "20-second windows. A window counts only if the aircraft is airborne, straight (|roll| < 10°), level "
+        "(|climb rate| < 0.25 m/s) and at steady airspeed, so the measured battery power (voltage × current) is "
+        "the power for level flight at that true airspeed; a steady wind does not change it.",
+        "",
+        "The prediction uses only published numbers: 3.0 m span and 6.5-10 kg (dry weight plus battery, up to "
+        "the 10 kg MTOW) from the manufacturer's datasheet, the 0.684 m² wing from the designer's 2013 "
+        "specification, and VALKYRIE's default CD0, e and efficiencies. No parameter is fitted to the logs.",
+        "",
+        f"![Albatross flights]({logs['fig']})",
+        "",
+        "| | Value |",
+        "|---|---:|",
+        f"| Median cruise airspeed / battery power | {logs['v_med']:.1f} m/s / {logs['p_med']:.0f} W |",
+        f"| Measured / predicted power at 8.25 kg, per flight | median {logs['ratio_med']:.2f}, IQR {logs['ratio_q'][0]:.2f}-{logs['ratio_q'][1]:.2f} |",
+        f"| Same, median of per-aircraft medians | {logs['vehicle_ratio_med']:.2f} (range {logs['vehicle_ratio_range'][0]:.2f}-{logs['vehicle_ratio_range'][1]:.2f}) |",
+        f"| Flights inside the 6.5-10 kg prediction band | {100 * logs['in_band']:.0f}% |",
+        f"| CD0 that would match each flight at 8.25 kg (median) | {logs['cd0_eff']:.3f} (default {DEFAULT_CD0}) |",
+        f"| Whole-flight average power / steady cruise power (median) | {logs['overhead']:.2f} |",
+        "",
+        "Why measured power can exceed the prediction even with right aerodynamics: the battery also feeds the "
+        "autopilot, radios and payload (cameras, gimbals), payload pods add drag, the true mass of each flight "
+        "is unknown, and hobby current sensors are often uncalibrated. Rows rejected and why: "
+        + ", ".join(f"{k} {v}" for k, v in sorted(logs["scan"]["status"].items(), key=lambda kv: -kv[1])) + ".",
+        "",
+        "## 7. Manufacturer datasheets",
+        "",
+        "`validation/data/uav_datasheets.csv` holds only numbers printed in a manufacturer's own datasheet (or the "
+        "X8 paper), with what each weight includes. Few small UAVs publish battery energy, wing area and an "
+        "endurance at a stated payload together; the UAV Factory Penguin BE does.",
+        "",
+        "**Endurance from battery energy (Penguin BE).** Published: 110 min with a 2.8 kg payload, 640 Wh LiPo, "
+        "3.3 m span, 0.79 m² wing, empty weight 14.9 kg including battery and landing gear, endurance in "
+        f"belly-landing configuration (gear removed; its mass, {GEAR_KG[0]}-{GEAR_KG[1]} kg here, is not "
+        "published). VALKYRIE, with its defaults and the full 640 Wh:",
+        "",
+        "| Mass (kg) | Speed | Airspeed (m/s) | Battery power (W) | Endurance (min) |",
+        "|---:|---|---:|---:|---:|",
+        *[f"| {e['mass']:.1f} | {e['case']} | {e['v']:.1f} | {e['p']:.0f} | {e['minutes']:.0f} |" for e in sheets["endurance"]],
+        "",
+        f"At the published 22 m/s cruise speed the prediction is {min(sheets['cruise_err']):+.0f}% to "
+        f"{max(sheets['cruise_err']):+.0f}% of the published {sheets['published_min']:.0f} min. Flying at "
+        "minimum-power speed would stretch it further; the published figure appears to be at cruise speed.",
+        "",
+        f"**CLmax.** The datasheet gives {sheets['clmax'][0]} clean and {sheets['clmax'][1]} with 45° flaps; "
+        "VALKYRIE's flapless default of 1.4 sits between.",
+        "",
+        "**Empty-weight fraction** (battery excluded, as VALKYRIE defines it):",
+        "",
+        "| Aircraft | We/W0 | Basis |",
+        "|---|---:|---|",
+        *[f"| {n} | {v:.2f} | {basis} |" for n, v, basis in sheets["fractions"]],
+        "",
+        "Both sit at or below VALKYRIE's fixed 0.50, so the default is not optimistic for these airframes; "
+        "two aircraft are far too few for a regression.",
+        "",
+        "**Whole sizing loop.** Each aircraft sized from its published payload and endurance alone (100 m "
+        "takeoff, 300 m altitude, still air, defaults):",
+        "",
+        "| Aircraft | Payload (kg) | Endurance (h) | Published W0 (kg) | VALKYRIE W0 (kg) | Error |",
+        "|---|---:|---:|---:|---:|---:|",
+        *[f"| {r['name']} | {r['payload']:.1f} | {r['hours']:.2f} | {r['actual']:.1f} | {r['pred']:.1f} | "
+          f"{100 * (r['pred'] / r['actual'] - 1):+.0f}% |" for r in sheets["sizing"]],
+        "",
+        "Conceptual sizing from two numbers lands within about ±40%. The Penguin BE airframe is built for up to "
+        "6.6 kg of payload, so it is heavier than a minimum design for 2.8 kg; the Skylark is lighter than a "
+        "0.50 empty fraction allows. Treat VALKYRIE's takeoff weight as a first estimate, not a quote.",
+        "",
+        f"**Why not Wikipedia.** `validation/uav_database.py` crawls Wikipedia's UAV categories and parses the "
+        f"spec infoboxes of {sheets['wiki_articles']} articles (`validation/data/uav_specs.csv`). Only "
+        f"{sheets['wiki_small_electric']} are electric aircraft under 50 kg, several of them quadcopters, payload "
+        "is almost never given, and some values are wrong at the source (the Wasp III article lists a 6.53 kg "
+        "gross weight for a 0.43 kg aircraft). The crawl is kept for reference but not used for any conclusion.",
+        "",
         "## What is not validated yet",
         "",
-        "- **End-to-end endurance against a flight log.** Needs a log with mass, wing area, battery energy "
-        "used, airspeed and wind. Spec sheets (e.g. Raven 1.9 kg, 60-90 min) omit battery energy, so they "
-        "cannot close the loop. Contributions welcome.",
-        "- **Empty-weight fraction** is fixed at 0.50; no regression against real airframes yet.",
+        "- **Endurance with the exact mass of a flight.** Public logs do not record takeoff mass, so section 6 "
+        "compares against a mass band. A log with a weighed aircraft would close this.",
         "- **Battery behaviour:** no Peukert effect, reserve or depth-of-discharge limit "
         "(Traub 2011/2013 shows discharge characteristics dominate the remaining uncertainty).",
         "- **Payload and avionics power draw** are not in the energy budget.",
@@ -342,7 +539,8 @@ def write_report(atm, x8, buildup, props, sim) -> None:
 
 
 def main() -> None:
-    results = [study_atmosphere(), study_x8(), study_aerobuildup(), study_propellers(), study_simulation()]
+    results = [study_atmosphere(), study_x8(), study_aerobuildup(), study_propellers(), study_simulation(),
+               study_flight_logs(), study_datasheets()]
     write_report(*results)
     print("wrote docs/validation.md and", ", ".join(p.name for p in sorted(FIG_DIR.glob("*.png"))))
 

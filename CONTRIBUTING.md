@@ -65,10 +65,17 @@ pytest tests/ -v --cov=valkyrie
 
 ## Contributing Data
 
-The most valuable contribution right now is **flight data** to validate endurance end to end.
-Useful logs have: takeoff mass, wing area and span, battery energy used (Wh, from a power module),
-airspeed, altitude and wind, and the propulsion setup. Open an issue with the log and its source;
-it becomes a case in `tests/validation/` and a section in `docs/validation.md`.
+VALKYRIE already checks itself against hundreds of public PX4 flight logs and manufacturer
+datasheets ([docs/validation.md](docs/validation.md)). What public data cannot give, and you can:
+
+- **A flight log of a weighed aircraft.** Public logs never record takeoff mass, so the real-flight
+  comparison uses a mass band. A log (PX4 `.ulg` or ArduPilot `.bin`) with the measured takeoff mass,
+  wing area and span, a calibrated power module and an airspeed sensor would pin it down.
+- **Datasheets that state battery energy, wing area and endurance at a given payload together.**
+  Add a row to `validation/data/uav_datasheets.csv` with the source URL.
+
+Open an issue with the data and its source; it becomes a case in `tests/validation/` and a section in
+`docs/validation.md`.
 
 Every physics change must cite its source in the docstring and in `docs/references.md`.
 
