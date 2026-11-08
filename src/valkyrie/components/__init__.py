@@ -1,14 +1,14 @@
 """Components package for COTS component selection."""
 
 from valkyrie.components.database import (
-    Motor,
-    Battery,
-    Propeller,
-    MOTORS,
     BATTERIES,
+    MOTORS,
     PROPELLERS,
-    find_motor,
+    Battery,
+    Motor,
+    Propeller,
     find_battery,
+    find_motor,
     find_propeller,
 )
 

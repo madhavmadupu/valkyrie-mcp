@@ -54,9 +54,23 @@ pytest tests/ -v --cov=valkyrie
 
 1. **Unit tests** go in `tests/unit/`
 2. **Integration tests** go in `tests/integration/`
-3. Use descriptive test names: `test_loiter_bmf_increases_with_endurance`
-4. Include docstrings explaining what the test validates
-5. Use fixtures from `conftest.py` for common test data
+3. **Validation tests** (against external data) go in `tests/validation/`; reference numbers live in
+   `tests/validation/validation_cases.py`, each with its source. Heavier studies go in
+   `validation/run_validation.py`, which regenerates `docs/validation.md` — rerun it after any
+   change to the physics.
+4. Use descriptive test names: `test_loiter_bmf_increases_with_endurance`
+5. Include docstrings explaining what the test validates
+6. Use fixtures from `conftest.py` for common test data
+7. Prefer checks against an independent calculation (energy balance, published data) over loose ranges
+
+## Contributing Data
+
+The most valuable contribution right now is **flight data** to validate endurance end to end.
+Useful logs have: takeoff mass, wing area and span, battery energy used (Wh, from a power module),
+airspeed, altitude and wind, and the propulsion setup. Open an issue with the log and its source;
+it becomes a case in `tests/validation/` and a section in `docs/validation.md`.
+
+Every physics change must cite its source in the docstring and in `docs/references.md`.
 
 ## Pull Request Process
 

@@ -1,97 +1,8 @@
 """Propulsion system modeling for VALKYRIE."""
 
-import math
 from dataclasses import dataclass
 
-from valkyrie.core.constants import GRAVITY, air_density
-
-
-@dataclass
-class PropellerModel:
-    """
-    Propeller performance model.
-
-    Uses momentum theory and advance ratio relationships.
-
-    Reference:
-        McCormick, B.W. "Aerodynamics of V/STOL Flight"
-    """
-
-    diameter_m: float  # Propeller diameter
-    pitch_m: float | None = None  # Geometric pitch (if known)
-    max_efficiency: float = 0.85  # Peak propeller efficiency
-
-    def advance_ratio(self, velocity_ms: float, rpm: float) -> float:
-        """
-        Calculate advance ratio J = V / (n·D)
-
-        Args:
-            velocity_ms: Forward velocity
-            rpm: Propeller rotational speed
-
-        Returns:
-            Advance ratio (dimensionless)
-        """
-        n_rps = rpm / 60.0  # Convert RPM to rev/s
-        j = velocity_ms / (n_rps * self.diameter_m) if n_rps > 0 else 0.0
-        return j
-
-    def efficiency(self, advance_ratio: float) -> float:
-        """
-        Estimate propeller efficiency from advance ratio.
-
-        Simplified model: η peaks at J ≈ 0.8-1.0, drops to zero at J=0 and high J.
-
-        For production use, replace with measured propeller data.
-        """
-        if advance_ratio <= 0:
-            return 0.0
-
-        # Parabolic approximation (peak at J_opt ≈ 0.9)
-        j_opt = 0.9
-        eta = self.max_efficiency * (1 - ((advance_ratio - j_opt) / 1.5) ** 2)
-
-        return max(0.0, min(eta, self.max_efficiency))
-
-    def thrust(
-        self,
-        shaft_power_w: float,
-        velocity_ms: float,
-        rpm: float,
-        altitude_m: float = 0.0,
-    ) -> float:
-        """
-        Calculate propeller thrust.
-
-        T = η_p · P_shaft / V  (for V > 0)
-
-        For static thrust (V=0), use momentum theory approximation.
-
-        Args:
-            shaft_power_w: Shaft power from motor
-            velocity_ms: Forward velocity
-            rpm: Propeller RPM
-            altitude_m: Altitude MSL
-
-        Returns:
-            Thrust in Newtons
-        """
-        if velocity_ms > 0.1:
-            # Dynamic thrust
-            j = self.advance_ratio(velocity_ms, rpm)
-            eta = self.efficiency(j)
-            thrust_n = (eta * shaft_power_w) / velocity_ms
-        else:
-            # Static thrust (momentum theory)
-            rho = air_density(altitude_m)
-            n_rps = rpm / 60.0
-
-            # T = CT · ρ · n² · D⁴
-            # CT ≈ 0.1 for typical props at static condition
-            ct_static = 0.10
-            thrust_n = ct_static * rho * (n_rps**2) * (self.diameter_m**4)
-
-        return thrust_n
+from valkyrie.core.constants import PROPELLER_EFFICIENCY_TYPICAL
 
 
 @dataclass
@@ -149,7 +60,7 @@ def thrust_lapse_with_velocity(
     static_thrust_n: float,
     velocity_ms: float,
     static_power_w: float,
-    prop_efficiency: float = 0.80,
+    prop_efficiency: float = PROPELLER_EFFICIENCY_TYPICAL,
 ) -> float:
     """
     Approximate thrust decay with forward velocity.
@@ -160,7 +71,7 @@ def thrust_lapse_with_velocity(
     As velocity increases, thrust decays approximately as 1/V.
 
     Reference:
-        Mattingly, J.D. Ch. 6 - Propeller performance
+        McCormick, B.W. "Aerodynamics, Aeronautics, and Flight Mechanics", 2nd ed., Ch. 6
 
     Args:
         static_thrust_n: Measured static thrust (V=0)

@@ -2,6 +2,7 @@
 
 import pytest
 
+from valkyrie.core.constants import GRAVITY
 from valkyrie.physics.aerodynamics import DragPolar
 from valkyrie.physics.mission import BatteryMassFraction, MissionAnalyzer
 
@@ -48,24 +49,32 @@ class TestBatteryMassFraction:
 
         assert bmf_50km > bmf_10km
 
-    def test_bmf_reasonable_range(self):
-        """BMF should be in reasonable range for typical missions."""
+    def test_loiter_bmf_matches_energy_balance(self):
+        """BMF = battery energy needed / (Esb · mass), from first principles."""
         bmf_calc = BatteryMassFraction(battery_specific_energy_whkg=150)
 
-        # 45-minute loiter with good L/D
-        bmf = bmf_calc.loiter_bmf(
-            endurance_hours=0.75, lift_to_drag=10.0, velocity_ms=18.0
+        # 1 kg aircraft, 1 h at 10 m/s, L/D 10: P_batt = m·g·V / (L/D · η_total)
+        power_w = 1.0 * GRAVITY * 10.0 / (10.0 * bmf_calc.eta_total)
+        expected_bmf = power_w * 1.0 / 150  # Wh needed / Wh per kg, per kg of aircraft
+
+        bmf = bmf_calc.loiter_bmf(endurance_hours=1.0, lift_to_drag=10.0, velocity_ms=10.0)
+        assert bmf == pytest.approx(expected_bmf)
+
+    def test_cruise_bmf_matches_energy_balance(self):
+        """Range BMF: energy = m·g·R / (L/D · η_total)."""
+        bmf_calc = BatteryMassFraction(battery_specific_energy_whkg=150)
+        energy_wh = 1.0 * GRAVITY * 50_000 / (10.0 * bmf_calc.eta_total) / 3600
+        assert bmf_calc.cruise_bmf(range_km=50, lift_to_drag=10.0) == pytest.approx(energy_wh / 150)
+
+    def test_climb_bmf_matches_energy_balance(self):
+        """Climb energy = (potential energy gain + drag work) / η_total."""
+        bmf_calc = BatteryMassFraction(battery_specific_energy_whkg=150)
+        t_s = 300 / 2.5
+        energy_j = (1.0 * GRAVITY * 300 + 1.0 * GRAVITY / 8.0 * 12.0 * t_s) / bmf_calc.eta_total
+        bmf = bmf_calc.climb_bmf(
+            altitude_change_m=300, rate_of_climb_ms=2.5, lift_to_drag_climb=8.0, climb_velocity_ms=12.0
         )
-
-        # With good L/D and modern batteries, BMF can be quite low
-        assert 0.01 < bmf < 0.10  # Optimistic but realistic
-
-        # More demanding mission (longer endurance, worse L/D)
-        bmf_demanding = bmf_calc.loiter_bmf(
-            endurance_hours=2.0, lift_to_drag=8.0, velocity_ms=20.0
-        )
-
-        assert 0.10 < bmf_demanding < 0.40  # More typical range
+        assert bmf == pytest.approx(energy_j / 3600 / 150)
 
 
 class TestMissionAnalyzer:
@@ -134,3 +143,81 @@ class TestMissionAnalyzer:
         )
 
         assert v_endurance < v_range
+
+
+class TestHeadwindRange:
+    """Range energy budget flown into a headwind."""
+
+    W = 6.0 * GRAVITY
+
+    def _analyzer(self):
+        return MissionAnalyzer(drag_polar=DragPolar(cd0=0.025, k=0.05), wing_area_m2=0.5)
+
+    def _energy_per_ground_km(self, analyzer, v, wind):
+        """Independent of the code under test: (D/W)·V/(V - w) straight from the polar."""
+        rho = analyzer.density_fn(300)
+        cl = self.W / (0.5 * rho * v**2 * 0.5)
+        return analyzer.drag_polar.drag_coefficient(cl) / cl * v / (v - wind)
+
+    def test_zero_wind_matches_still_air(self):
+        a = self._analyzer()
+        still = a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300)
+        zero = a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300, headwind_ms=0)
+        assert zero == still
+
+    def test_headwind_costs_battery(self):
+        a = self._analyzer()
+        bmf_still, _, _ = a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300)
+        bmf_wind, _, _ = a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300, headwind_ms=8)
+        assert bmf_wind > bmf_still
+
+    def test_flies_faster_into_headwind(self):
+        a = self._analyzer()
+        _, v_still, _ = a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300)
+        _, v_wind, _ = a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300, headwind_ms=8)
+        assert v_wind > v_still
+
+    def test_chosen_airspeed_minimizes_energy_per_ground_km(self):
+        a = self._analyzer()
+        _, v_opt, _ = a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300, headwind_ms=8)
+        e_opt = self._energy_per_ground_km(a, v_opt, 8)
+        for dv in (-2.0, -0.5, 0.5, 2.0):
+            assert e_opt <= self._energy_per_ground_km(a, v_opt + dv, 8)
+
+    def test_bmf_matches_independent_energy_balance(self):
+        """BMF = W·(D/W)·V/(V-w)·R / (η·Esb), computed without the code under test."""
+        a = self._analyzer()
+        bmf, v_opt, _ = a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300, headwind_ms=8)
+        energy_wh = self.W * self._energy_per_ground_km(a, v_opt, 8) * 30_000 / a.bmf_calc.eta_total / 3600
+        assert bmf == pytest.approx(energy_wh / (self.W / GRAVITY) / 150)
+
+    def test_tailwind_leg_is_cheaper_and_slower(self):
+        a = self._analyzer()
+        bmf_still, v_still, _ = a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300)
+        bmf_tail, v_tail, _ = a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300, headwind_ms=-8)
+        rho = a.density_fn(300)
+        v_min_power = (2 * self.W / (rho * 0.5 * a.drag_polar.cl_for_max_endurance)) ** 0.5
+        assert bmf_tail < bmf_still
+        assert v_min_power <= v_tail < v_still
+
+    def test_round_trip_in_wind_always_costs_more_than_still_air(self):
+        """Classic result: the tailwind home never repays the headwind out."""
+        a = self._analyzer()
+        leg = lambda w: a.analyze_range_mission(range_km=30, weight_n=self.W, altitude_m=300, headwind_ms=w)[0]  # noqa: E731
+        for w in (2, 5, 8, 12):
+            round_trip = leg(w) + leg(-w)
+            assert 2 * leg(0) < round_trip < 2 * leg(w)
+
+
+class TestClimb:
+    def test_climb_energy_matches_potential_plus_drag_work(self):
+        """Independent: E = (m·g·Δh + D·V·t) / η at the minimum-power speed."""
+        a = MissionAnalyzer(drag_polar=DragPolar(cd0=0.025, k=0.05), wing_area_m2=0.5)
+        W = 6.0 * GRAVITY
+        bmf, v, ld = a.analyze_climb(0, 300, W, rate_of_climb_ms=2.5)
+        energy_j = (W * 300 + W / ld * v * (300 / 2.5)) / a.bmf_calc.eta_total
+        assert bmf == pytest.approx(energy_j / 3600 / 150 / 6.0)
+
+    def test_no_climb_no_energy(self):
+        a = MissionAnalyzer(drag_polar=DragPolar(cd0=0.025, k=0.05), wing_area_m2=0.5)
+        assert a.analyze_climb(500, 300, 60.0, 2.5)[0] == 0.0

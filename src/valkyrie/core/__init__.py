@@ -1,22 +1,22 @@
 """Core __init__ for valkyrie.core package."""
 
 from valkyrie.core.constants import (
-    GRAVITY,
     AIR_DENSITY_SEA_LEVEL,
+    GRAVITY,
     air_density,
     dynamic_pressure,
 )
 from valkyrie.core.exceptions import (
-    VALKYRIEError,
-    PhysicsViolationError,
     ConvergenceError,
     InvalidRequirementError,
+    PhysicsViolationError,
+    VALKYRIEError,
 )
 from valkyrie.core.models import (
-    MissionRequirements,
+    AerodynamicConfig,
     AircraftDesign,
     DesignPoint,
-    AerodynamicConfig,
+    MissionRequirements,
     PropulsionConfig,
     WeightBreakdown,
 )

@@ -2,8 +2,31 @@
 
 from dataclasses import dataclass
 
-from valkyrie.core.exceptions import PhysicsViolationError
+from valkyrie.core.constants import FT_TO_M, KTS_TO_MS, LB_TO_KG
 from valkyrie.core.models import DesignPoint, MissionRequirements
+
+
+def dod_uas_group(gross_weight_kg: float, altitude_agl_m: float, altitude_msl_m: float, airspeed_ms: float) -> int:
+    """
+    DoD UAS Group (1-5); the aircraft takes the highest group any one attribute reaches.
+
+    Group 1: ≤20 lb, <1,200 ft AGL, <100 kt    Group 2: 21-55 lb, <3,500 ft AGL, <250 kt
+    Group 3: <1,320 lb, <FL180, <250 kt        Group 4: >1,320 lb, <FL180, any speed
+    Group 5: >1,320 lb, >FL180, any speed
+
+    Reference: DoD Joint UAS CONOPS / JP 3-30 group table.
+    """
+    lb = gross_weight_kg / LB_TO_KG
+    by_weight = 1 if lb <= 20 else 2 if lb <= 55 else 3 if lb < 1320 else 4
+    by_altitude = (
+        5 if altitude_msl_m >= 18_000 * FT_TO_M
+        else 1 if altitude_agl_m < 1_200 * FT_TO_M
+        else 2 if altitude_agl_m < 3_500 * FT_TO_M
+        else 3
+    )
+    kts = airspeed_ms / KTS_TO_MS
+    by_speed = 1 if kts < 100 else 2 if kts < 250 else 4
+    return max(by_weight, by_altitude, by_speed)
 
 
 @dataclass
@@ -41,8 +64,63 @@ class DesignValidator:
         self._check_battery_fraction()
         self._check_reynolds_number()
         self._check_structural_loads()
+        self._check_wind_penetration()
+        self._check_uas_group()
 
         return self.results
+
+    def cruise_speed_ms(self) -> float:
+        """Cruise airspeed: the mission's, else the CL = 0.5 speed the cruise constraint sizes thrust for."""
+        if self.mission.cruise_speed_ms is not None:
+            return self.mission.cruise_speed_ms
+        rho = self.mission.air_density_at(self.mission.cruise_altitude_m)
+        return float((2 * self.design.wing_loading_pa / (rho * 0.5)) ** 0.5)
+
+    def uas_group(self) -> int:
+        """DoD UAS Group of this design at its cruise condition."""
+        # shortcut: uses cruise speed, not max dash speed (not modeled); upgrade when max speed is sized
+        return dod_uas_group(
+            self.design.gross_weight_kg,
+            self.mission.cruise_altitude_m - self.mission.field_elevation_m,
+            self.mission.cruise_altitude_m,
+            self.cruise_speed_ms(),
+        )
+
+    def _check_wind_penetration(self) -> None:
+        """Aircraft must out-fly the required wind, or it cannot hold station or get home."""
+        v = self.cruise_speed_ms()
+        wind = self.mission.max_wind_speed_ms
+        if v <= wind:
+            self._add_result(
+                False,
+                "error",
+                "wind_penetration",
+                f"Cruise airspeed {v:.1f} m/s ≤ max wind {wind:.1f} m/s: the aircraft cannot make "
+                "headway upwind and will be blown off station.",
+                v,
+                wind,
+            )
+        elif v < 2 * wind:
+            self._add_result(
+                False,
+                "warning",
+                "wind_penetration_marginal",
+                f"Upwind ground speed {v - wind:.1f} m/s is under half the cruise airspeed "
+                f"{v:.1f} m/s in {wind:.1f} m/s wind: transit and return times more than double.",
+                v,
+                2 * wind,
+            )
+        else:
+            self._add_result(
+                True,
+                "info",
+                "wind_penetration_ok",
+                f"Cruise airspeed {v:.1f} m/s out-flies {wind:.1f} m/s wind with margin.",
+            )
+
+    def _check_uas_group(self) -> None:
+        group = self.uas_group()
+        self._add_result(True, "info", "dod_uas_group", f"DoD UAS Group {group}.", float(group))
 
     def _add_result(
         self,
@@ -69,7 +147,7 @@ class DesignValidator:
         """Check wing loading is reasonable."""
         ws_pa = self.design.wing_loading_pa
 
-        # Typical small UAV: 10-50 N/m²
+        # Typical small UAV: 50-200 N/m²
         if ws_pa < 5:
             self._add_result(
                 False,
@@ -79,14 +157,14 @@ class DesignValidator:
                 ws_pa,
                 5.0,
             )
-        elif ws_pa > 100:
+        elif ws_pa > 200:
             self._add_result(
                 False,
                 "warning",
                 "wing_loading_high",
                 f"Wing loading {ws_pa:.1f} N/m² is very high. Requires high takeoff speed.",
                 ws_pa,
-                100.0,
+                200.0,
             )
         else:
             self._add_result(
@@ -180,11 +258,9 @@ class DesignValidator:
     def _check_reynolds_number(self) -> None:
         """Check Reynolds number is in acceptable regime."""
         # Estimate cruise velocity from wing loading
-        from valkyrie.core.constants import air_density
 
-        rho = air_density(self.mission.cruise_altitude_m)
-        cl_cruise = 0.5  # Typical
-        v_cruise = (2 * self.design.wing_loading_pa / (rho * cl_cruise)) ** 0.5
+        rho = self.mission.air_density_at(self.mission.cruise_altitude_m)
+        v_cruise = self.cruise_speed_ms()
 
         # Estimate chord
         ar = 8.0

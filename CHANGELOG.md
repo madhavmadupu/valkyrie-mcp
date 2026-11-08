@@ -7,17 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Initial public release
-- Core physics engine (aerodynamics, propulsion, mission analysis)
-- Constraint analysis solver (T/W vs W/S methodology)
-- Battery mass fraction calculations for electric UAVs
-- Iterative sizing loop with convergence
-- Complete tactical field UAV example
-- Unit and integration tests (64% coverage)
-- Comprehensive documentation
+### Fixed
+- Loiter and climb battery mass fractions were 3.6× too optimistic (spurious unit factor; climb also double-counted prop efficiency)
+- Design point was always the edge of the W/S sweep; it is now capped by stall speed / landing distance
+- Cruise constraint ignored `cruise_speed_ms`
+- Range-only missions were rejected; missions with both range and endurance now budget battery for both
+- `[all]` extra pointed at the wrong package name
+- Climb to cruise altitude was missing from the battery budget (about 10% of the ISR mission's energy)
+- Tailwind legs were treated as still air
+- Wrong citations: "Aircraft Engineering Principles" is not by Mattingly; constraint analysis now cites
+  Mattingly, Heiser & Pratt, *Aircraft Engine Design*, Ch. 2; battery formulas cite Traub (2011) and Hepperle (2012)
+- Worked example used CLmax 1.8 for takeoff and stall while sizing used 1.4
 
-## [0.1.0] - 2025-01-XX
+### Added
+- MCP server (`valkyrie-mcp` command) with `size_uav` and `find_components` tools
+- `max_stall_speed_ms` mission requirement (default 12 m/s)
+- Military operating checks: DoD UAS Group (1–5) classification, wind-penetration check
+  (`max_wind_speed_ms`, previously ignored), hot-and-high air density from
+  `temperature_celsius` (previously ignored) and new `field_elevation_m`
+- Headwind in the battery budget: range legs are flown into `max_wind_speed_ms` at the
+  energy-optimal airspeed (loiter energy is wind-independent)
+- Sizing rejects designs whose payload would be under 5% of takeoff weight, instead of
+  reporting a runaway 'converged' aircraft
+- Non-electric propulsion now raises `InvalidRequirementError` instead of being sized as electric
+- mcp 2.x support (`MCPServer`), alongside mcp 1.x
+- Out-and-back transit (`round_trip=True`): headwind out, tailwind home, each leg at its energy-optimal airspeed
+- `valkyrie.simulation.MissionSimulator`: time-stepping mission simulator with vector wind
+- Validation: `tests/validation/` (USSA-1976, Skywalker X8 measured aerodynamics, UIUC propeller data,
+  simulator cross-checks; runs in CI) and `validation/run_validation.py` (adds AeroSandbox; regenerates
+  `docs/validation.md` and its figures); `[validation]` extra
+- Documentation: `docs/getting-started.md`, `docs/theory.md`, `docs/validation.md`, `docs/references.md`
+
+### Changed
+- Range missions now default to a 10 m/s headwind (`max_wind_speed_ms` default); set it to 0 for still-air numbers
+- Default CLmax 1.8/2.0 → 1.4 (flapless small-UAV wing)
+- Default propeller efficiency 0.80 → 0.70: UIUC wind-tunnel peaks for APC Thin Electric 11-16 in are
+  0.68-0.79 (battery estimates rise about 14%)
+- `air_density` converts geometric to geopotential altitude; now matches USSA-1976 to 0.001%
+- `range_km` is documented as one-way distance
+- Removed unused dependencies (numpy, scipy, httpx, pyyaml, pydantic-settings) and the unused `physics/weights.py`
+
+### Removed
+- `PropellerModel`: its efficiency curve (peak 0.85 at J = 0.9) contradicted UIUC wind-tunnel data and sizing never used it
+
+## [0.1.0] - 2026-11-08
 
 ### Added
 - **Core Models**: Pydantic v2 data models for missions, aircraft, design points
@@ -43,7 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integration tests for end-to-end design
   - 64% code coverage
 - **Documentation**:
-  - Professional README with viral marketing hooks
+  - README with quick-start guide
   - Theory references (Anderson, Raymer, Mattingly)
   - Installation and quick-start guide
 
@@ -52,10 +85,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Empty weight regression uses fixed fraction (needs parametric model)
 - MCP server tools not yet implemented (Phase 1 focus on core physics)
 
-### Roadmap
-- **v0.2.0**: MCP server with 15+ tools for Claude integration
-- **v0.3.0**: Component database (motors, batteries, propellers)
-- **v1.0.0**: Multi-INT fusion and AI mission planning
 
 ---
 
@@ -73,8 +102,6 @@ This initial release establishes VALKYRIE's foundation as a **physics-first UAV 
 
 **What's Missing (by design for Phase 1):**
 - MCP server integration (coming in v0.2.0)
-- Component databases (coming in v0.2.0)
-- Multi-INT fusion (Phase 3, v1.0.0)
 
 **Target Users:**
 - Aerospace engineering students learning conceptual design

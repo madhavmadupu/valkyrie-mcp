@@ -1,6 +1,7 @@
 """Tests for aerodynamics module."""
 
 import math
+
 import pytest
 
 from valkyrie.physics.aerodynamics import (
@@ -71,7 +72,7 @@ class TestAerodynamicFunctions:
 
     def test_stall_speed_calculation(self):
         """Stall speed should match analytical formula."""
-        from valkyrie.core.constants import air_density, GRAVITY
+        from valkyrie.core.constants import GRAVITY, air_density
 
         wing_area = 0.5  # m²
         weight_kg = 5.0

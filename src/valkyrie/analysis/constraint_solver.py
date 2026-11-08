@@ -2,20 +2,21 @@
 Constraint analysis for aircraft sizing.
 
 Implements T/W vs W/S constraint methodology from:
-- Mattingly, J.D. "Aircraft Engineering Principles", Ch. 5
-- Raymer, D.P. "Aircraft Design: A Conceptual Approach", Ch. 5
+- Mattingly, J.D., Heiser, W.H., Pratt, D.T. "Aircraft Engine Design", 2nd ed., AIAA, 2002, Ch. 2
+- Raymer, D.P. "Aircraft Design: A Conceptual Approach", 6th ed., AIAA, 2018, Ch. 5
 """
 
 import math
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
-from valkyrie.core.constants import GRAVITY, air_density
-from valkyrie.core.exceptions import PhysicsViolationError
-from valkyrie.core.models import MissionRequirements
+from valkyrie.analysis.sizing_loop import SizingLoop
+from valkyrie.core.constants import DEFAULT_CLIMB_RATE_MS, GRAVITY
+from valkyrie.core.exceptions import InvalidRequirementError, PhysicsViolationError
+from valkyrie.core.models import DesignPoint, MissionRequirements, PropulsionType
 
 
-class ConstraintType(str, Enum):
+class ConstraintType(StrEnum):
     """Types of performance constraints."""
 
     TAKEOFF = "takeoff"
@@ -50,8 +51,9 @@ class ConstraintAnalyzer:
         cd0: float = 0.025,
         oswald_efficiency: float = 0.80,
         aspect_ratio: float = 8.0,
-        cl_max_takeoff: float = 1.8,
-        cl_max_landing: float = 2.0,
+        cl_max_takeoff: float = 1.4,  # flapless small-UAV wing; 1.8+ needs flaps
+        cl_max_landing: float = 1.4,
+        battery_specific_energy_whkg: float = 150,
     ):
         """
         Initialize constraint analyzer.
@@ -63,6 +65,7 @@ class ConstraintAnalyzer:
             aspect_ratio: Wing aspect ratio (assumed)
             cl_max_takeoff: Max lift coefficient for takeoff
             cl_max_landing: Max lift coefficient for landing
+            battery_specific_energy_whkg: Usable battery specific energy (Wh/kg)
         """
         self.mission = mission
         self.cd0 = cd0
@@ -70,6 +73,13 @@ class ConstraintAnalyzer:
         self.aspect_ratio = aspect_ratio
         self.cl_max_takeoff = cl_max_takeoff
         self.cl_max_landing = cl_max_landing
+        self.battery_specific_energy_whkg = battery_specific_energy_whkg
+
+        if mission.propulsion != PropulsionType.ELECTRIC:
+            raise InvalidRequirementError(
+                f"{mission.propulsion.value} propulsion is not supported yet; "
+                "sizing uses battery mass fractions (electric only)."
+            )
 
         # Induced drag factor
         self.k = 1.0 / (math.pi * oswald_efficiency * aspect_ratio)
@@ -89,7 +99,7 @@ class ConstraintAnalyzer:
         Returns:
             Required T/W
         """
-        rho = air_density(0)  # Sea level density
+        rho = self.mission.air_density_at(self.mission.field_elevation_m)
         s_to = self.mission.takeoff_distance_m
 
         # Takeoff parameter (simplified)
@@ -115,24 +125,25 @@ class ConstraintAnalyzer:
         Returns:
             Required T/W (typically zero for glide approach)
         """
-        # Landing distance constraint acts as max W/S limit
-        # For T/W chart, this becomes a vertical line at max W/S
-
-        rho = air_density(0)
-        s_land = self.mission.landing_distance_m or (self.mission.takeoff_distance_m * 1.2)
-
-        # Approximate stall speed from landing distance
-        # s_land ≈ 1.5·V_stall²/g
-        v_stall_ms = math.sqrt(s_land * GRAVITY / 1.5)
-
-        # Max wing loading
-        ws_max = 0.5 * rho * v_stall_ms**2 * self.cl_max_landing
-
-        # Return high T/W if exceeds max (indicates infeasibility)
-        if wing_loading_pa > ws_max:
+        # Landing/stall limits act as a max W/S (vertical line on the T/W chart)
+        if wing_loading_pa > self.max_wing_loading():
             return 999.0  # Infeasible
 
         return 0.0  # Glide approach
+
+    def max_wing_loading(self) -> float:
+        """
+        Highest W/S allowed by the stall-speed and landing-distance limits (at field elevation, design-day density).
+
+        (W/S)_max = 0.5·ρ·V_stall²·CL_max, with V_stall the lower of the mission's
+        max stall speed and the stall speed implied by landing distance
+        (s_land ≈ 1.5·V_stall²/g).
+        """
+        rho = self.mission.air_density_at(self.mission.field_elevation_m)
+        s_land = self.mission.landing_distance_m or (self.mission.takeoff_distance_m * 1.2)
+        v_stall_landing = math.sqrt(s_land * GRAVITY / 1.5)
+        v_stall = min(self.mission.max_stall_speed_ms, v_stall_landing)
+        return 0.5 * rho * v_stall**2 * self.cl_max_landing
 
     def cruise_constraint(
         self, wing_loading_pa: float, velocity_ms: float | None = None
@@ -148,18 +159,20 @@ class ConstraintAnalyzer:
 
         Args:
             wing_loading_pa: Wing loading
-            velocity_ms: Cruise speed (uses mission default if None)
+            velocity_ms: Cruise speed (falls back to mission.cruise_speed_ms, then CL=0.5)
 
         Returns:
             Required T/W
         """
         if velocity_ms is None:
-            # Default cruise speed (estimate from wing loading)
-            rho = air_density(self.mission.cruise_altitude_m)
+            velocity_ms = self.mission.cruise_speed_ms
+        if velocity_ms is None:
+            # No cruise speed given: assume cruise at CL = 0.5
+            rho = self.mission.air_density_at(self.mission.cruise_altitude_m)
             cl_cruise = 0.5  # Typical cruise CL
             velocity_ms = math.sqrt(2 * wing_loading_pa / (rho * cl_cruise))
 
-        rho = air_density(self.mission.cruise_altitude_m)
+        rho = self.mission.air_density_at(self.mission.cruise_altitude_m)
         q = 0.5 * rho * velocity_ms**2
 
         # Lift coefficient
@@ -176,7 +189,7 @@ class ConstraintAnalyzer:
     def climb_constraint(
         self,
         wing_loading_pa: float,
-        rate_of_climb_ms: float = 2.5,
+        rate_of_climb_ms: float = DEFAULT_CLIMB_RATE_MS,
         velocity_ms: float | None = None,
     ) -> float:
         """
@@ -198,11 +211,11 @@ class ConstraintAnalyzer:
         """
         if velocity_ms is None:
             # Use best climb speed (between stall and cruise)
-            rho = air_density(0)
+            rho = self.mission.air_density_at(self.mission.field_elevation_m)
             cl_climb = 1.2  # Typical climb CL
             velocity_ms = math.sqrt(2 * wing_loading_pa / (rho * cl_climb))
 
-        rho = air_density(0)
+        rho = self.mission.air_density_at(self.mission.field_elevation_m)
         q = 0.5 * rho * velocity_ms**2
 
         cl = wing_loading_pa / q
@@ -259,14 +272,14 @@ class ConstraintAnalyzer:
             )
 
             # Climb constraint
-            tw_climb = self.climb_constraint(ws, rate_of_climb_ms=2.5)
+            tw_climb = self.climb_constraint(ws)
             constraints.append(
                 DesignConstraint(
                     name="Climb",
                     constraint_type=ConstraintType.CLIMB,
                     wing_loading_pa=ws,
                     thrust_to_weight=tw_climb,
-                    description="Rate of climb: 2.5 m/s",
+                    description=f"Rate of climb: {DEFAULT_CLIMB_RATE_MS} m/s",
                 )
             )
 
@@ -277,12 +290,18 @@ class ConstraintAnalyzer:
         Find optimal design point in feasible region.
 
         Strategy: Select highest W/S that satisfies all constraints
-        (minimizes wing area and structural weight).
+        (minimizes wing area and structural weight). The W/S sweep ends at the
+        stall/landing limit, so that limit, not an arbitrary grid edge, caps W/S.
 
         Returns:
             (optimal_wing_loading_pa, required_thrust_to_weight)
         """
-        constraints = self.generate_constraint_diagram()
+        ws_max = self.max_wing_loading()
+        if ws_max <= 10:
+            raise PhysicsViolationError(
+                f"Stall/landing limits allow only W/S ≤ {ws_max:.1f} N/m², too low to build."
+            )
+        constraints = self.generate_constraint_diagram(ws_range_pa=(10, ws_max))
 
         # Group constraints by W/S
         ws_to_max_tw: dict[float, float] = {}
@@ -310,16 +329,13 @@ class ConstraintAnalyzer:
         return optimal_ws, optimal_tw
 
 
-    def solve(self):
+    def solve(self) -> DesignPoint:
         """
         Solve for converged design point.
 
         Returns:
             DesignPoint with converged W0, W/S, T/W
         """
-        from valkyrie.analysis.sizing_loop import SizingLoop
-        from valkyrie.core.models import DesignPoint
-
         # Get initial design point from constraint analysis
         ws_pa, tw = self.find_design_point()
 
@@ -331,6 +347,7 @@ class ConstraintAnalyzer:
             cd0=self.cd0,
             aspect_ratio=self.aspect_ratio,
             oswald_efficiency=self.oswald_efficiency,
+            battery_specific_energy_whkg=self.battery_specific_energy_whkg,
         )
 
         result = sizing.converge()

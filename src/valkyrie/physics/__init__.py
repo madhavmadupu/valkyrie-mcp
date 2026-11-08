@@ -14,7 +14,6 @@ from valkyrie.physics.mission import (
 )
 from valkyrie.physics.propulsion import (
     ElectricMotorModel,
-    PropellerModel,
     battery_specific_energy,
     thrust_lapse_with_velocity,
 )
@@ -29,7 +28,6 @@ __all__ = [
     "MissionAnalyzer",
     "MissionSegment",
     "ElectricMotorModel",
-    "PropellerModel",
     "battery_specific_energy",
     "thrust_lapse_with_velocity",
 ]

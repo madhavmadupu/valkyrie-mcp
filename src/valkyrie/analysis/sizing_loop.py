@@ -2,16 +2,19 @@
 Iterative sizing loop for aircraft weight convergence.
 
 Reference:
-    Raymer, D.P. "Aircraft Design: A Conceptual Approach", Ch. 6
+    Raymer, D.P. "Aircraft Design: A Conceptual Approach", 6th ed., AIAA, 2018, Ch. 3 and 6
 """
 
 from dataclasses import dataclass
 
-from valkyrie.core.constants import GRAVITY
+from valkyrie.core.constants import DEFAULT_CLIMB_RATE_MS, GRAVITY
 from valkyrie.core.exceptions import ConvergenceError
 from valkyrie.core.models import MissionRequirements
 from valkyrie.physics.aerodynamics import DragPolar
-from valkyrie.physics.mission import BatteryMassFraction
+
+# Below this, W0 = payload / (1 - We/W0 - BMF) blows up toward infinity and the fixed We/W0
+# regression is far outside its data; small UAVs carry roughly 10-40% payload.
+MIN_PAYLOAD_FRACTION = 0.05
 
 
 @dataclass
@@ -98,24 +101,39 @@ class SizingLoop:
             drag_polar=self.drag_polar,
             wing_area_m2=wing_area_m2,
             battery_specific_energy_whkg=self.battery_specific_energy,
+            density_fn=self.mission.air_density_at,
         )
 
+        if not (self.mission.endurance_hours or self.mission.range_km):
+            raise ValueError("Must specify endurance or range")
+
+        # Mission = climb from the field to cruise altitude, transit, loiter: energies add.
+        # Descent is a glide (no energy cost, no credit).
+        bmf = analyzer.analyze_climb(
+            altitude_start_m=self.mission.field_elevation_m,
+            altitude_end_m=self.mission.cruise_altitude_m,
+            weight_n=weight_n,
+            rate_of_climb_ms=DEFAULT_CLIMB_RATE_MS,
+        )[0]
         if self.mission.endurance_hours:
-            # Loiter mission
-            bmf, _, _ = analyzer.analyze_loiter_mission(
+            # Steady wind doesn't change loiter energy: same airspeed, same power, same time
+            # (only V > wind is required, which DesignValidator checks).
+            bmf += analyzer.analyze_loiter_mission(
                 endurance_hours=self.mission.endurance_hours,
                 weight_n=weight_n,
                 altitude_m=self.mission.cruise_altitude_m,
-            )
-        elif self.mission.range_km:
-            # Range mission
-            bmf, _, _ = analyzer.analyze_range_mission(
-                range_km=self.mission.range_km,
-                weight_n=weight_n,
-                altitude_m=self.mission.cruise_altitude_m,
-            )
-        else:
-            raise ValueError("Must specify endurance or range")
+            )[0]
+        if self.mission.range_km:
+            # Worst case is wind along the track (validation/: wind-heading sweep):
+            # one-way = full headwind; out-and-back = headwind out, tailwind home.
+            wind = self.mission.max_wind_speed_ms
+            for headwind in (wind, -wind) if self.mission.round_trip else (wind,):
+                bmf += analyzer.analyze_range_mission(
+                    range_km=self.mission.range_km,
+                    weight_n=weight_n,
+                    altitude_m=self.mission.cruise_altitude_m,
+                    headwind_ms=headwind,
+                )[0]
 
         return bmf
 
@@ -158,6 +176,13 @@ class SizingLoop:
                 raise ConvergenceError(
                     f"Sum of fractions exceeds 1.0: We/W0={self.empty_weight_fraction:.3f}, "
                     f"BMF={bmf:.3f}. Mission may be infeasible with current technology."
+                )
+            payload_fraction = 1.0 - self.empty_weight_fraction - bmf
+            if payload_fraction < MIN_PAYLOAD_FRACTION:
+                raise ConvergenceError(
+                    f"Payload would be only {payload_fraction:.1%} of takeoff weight "
+                    f"(BMF={bmf:.3f}, We/W0={self.empty_weight_fraction:.3f}): the aircraft would "
+                    f"weigh {1 / payload_fraction:.0f}× its payload. Mission not practical."
                 )
 
             # Solve for new W0

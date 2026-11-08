@@ -1,7 +1,6 @@
 """Component database for COTS motors, batteries, and propellers."""
 
 from dataclasses import dataclass
-from typing import Protocol
 
 
 @dataclass

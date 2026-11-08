@@ -2,7 +2,7 @@
 
 import pytest
 
-from valkyrie.core.models import MissionRequirements, PropulsionType, MissionProfile
+from valkyrie.core.models import MissionProfile, MissionRequirements, PropulsionType
 
 
 @pytest.fixture

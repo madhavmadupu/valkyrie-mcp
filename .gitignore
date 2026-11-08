@@ -67,3 +67,6 @@ site/
 # Environment
 .env
 .env.local
+
+# Validation downloads (UIUC propeller data)
+validation/.cache/

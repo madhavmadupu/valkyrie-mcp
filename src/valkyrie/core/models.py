@@ -1,12 +1,12 @@
 """Core data models for VALKYRIE using Pydantic v2."""
 
-from enum import Enum
+from enum import StrEnum
 from typing import Annotated
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 
-class PropulsionType(str, Enum):
+class PropulsionType(StrEnum):
     """Types of propulsion systems."""
 
     ELECTRIC = "electric"
@@ -15,7 +15,7 @@ class PropulsionType(str, Enum):
     TURBINE = "turbine"
 
 
-class MissionProfile(str, Enum):
+class MissionProfile(StrEnum):
     """Standard mission profile types."""
 
     ISR_LOITER = "isr_loiter"  # Intelligence/Surveillance/Reconnaissance
@@ -31,17 +31,18 @@ class MissionRequirements(BaseModel):
     Represents the operational concept (CONOPS) that drives all design decisions.
 
     Reference:
-        Mattingly, J.D. "Aircraft Engineering Principles", Ch. 2
+        Raymer, D.P. "Aircraft Design: A Conceptual Approach", 6th ed., Ch. 2
     """
 
     # Primary Mission Parameters
     payload_mass_kg: Annotated[float, Field(gt=0, description="Payload mass in kg")]
     endurance_hours: Annotated[
-        float, Field(gt=0, lt=100, description="Required endurance in hours")
-    ]
+        float | None,
+        Field(gt=0, lt=100, description="Required loiter endurance in hours"),
+    ] = None
     range_km: Annotated[
-        float | None, Field(default=None, ge=0, description="Required range in km")
-    ]
+        float | None, Field(ge=0, description="One-way transit distance in km")
+    ] = None
 
     # Performance Constraints
     takeoff_distance_m: Annotated[
@@ -49,15 +50,29 @@ class MissionRequirements(BaseModel):
     ]
     landing_distance_m: Annotated[
         float | None,
-        Field(default=None, gt=0, description="Maximum landing distance in meters"),
-    ]
+        Field(gt=0, description="Maximum landing distance in meters"),
+    ] = None
     cruise_altitude_m: Annotated[
         float, Field(ge=0, le=10000, description="Cruise altitude in meters MSL")
     ]
+    field_elevation_m: Annotated[
+        float, Field(ge=0, le=5000, description="Launch/recovery site elevation in meters MSL")
+    ] = 0.0
     cruise_speed_ms: Annotated[
         float | None,
-        Field(default=None, gt=0, description="Cruise true airspeed in m/s"),
-    ]
+        Field(gt=0, description="Cruise true airspeed in m/s"),
+    ] = None
+    round_trip: bool = Field(
+        default=False,
+        description="range_km is one-way; also fly back to the launch site (out-and-back)",
+    )
+    max_stall_speed_ms: Annotated[
+        float,
+        Field(
+            gt=0,
+            description="Maximum stall speed in m/s (12 m/s ≈ hand/bungee-launch small UAV)",
+        ),
+    ] = 12.0
 
     # Mission Profile
     profile: MissionProfile = Field(
@@ -71,23 +86,33 @@ class MissionRequirements(BaseModel):
 
     # Environmental Constraints
     max_wind_speed_ms: Annotated[
-        float, Field(default=10.0, ge=0, description="Maximum operational wind speed m/s")
-    ]
+        float, Field(ge=0, description="Maximum operational wind speed m/s")
+    ] = 10.0
     temperature_celsius: Annotated[
-        float, Field(default=15.0, description="Design temperature in Celsius")
-    ]
+        float,
+        Field(ge=-60, le=60, description="Design-day sea-level temperature in Celsius (ISA = 15)"),
+    ] = 15.0
 
-    @field_validator("endurance_hours", "range_km")
-    @classmethod
-    def validate_endurance_or_range(cls, v: float | None, info) -> float | None:
-        """Ensure at least one of endurance or range is specified."""
-        if v is None and info.data.get("range_km") is None:
-            raise ValueError("Must specify either endurance_hours or range_km")
-        return v
+    def air_density_at(self, altitude_m: float) -> float:
+        """Air density on the design day: ISA pressure, temperature offset by temperature_celsius."""
+        from valkyrie.core.constants import (
+            TEMPERATURE_LAPSE_RATE,
+            air_density,
+            geopotential_altitude,
+        )
+
+        h = geopotential_altitude(altitude_m)
+        temperature_k = self.temperature_celsius + 273.15 - TEMPERATURE_LAPSE_RATE * h
+        return air_density(altitude_m, temperature_k)
 
     @model_validator(mode="after")
     def validate_mission_feasibility(self) -> "MissionRequirements":
         """Validate that mission requirements are internally consistent."""
+        if self.endurance_hours is None and self.range_km is None:
+            raise ValueError("Must specify endurance_hours and/or range_km")
+        if self.cruise_altitude_m < self.field_elevation_m:
+            raise ValueError("cruise_altitude_m (MSL) is below field_elevation_m")
+
         # Check if cruise speed is reasonable for altitude
         if self.cruise_speed_ms is not None:
             if self.cruise_speed_ms < 10:
@@ -116,7 +141,7 @@ class AerodynamicConfig(BaseModel):
     @property
     def wing_span_m(self) -> float:
         """Calculate wing span from area and aspect ratio."""
-        return (self.wing_area_m2 * self.aspect_ratio) ** 0.5
+        return float((self.wing_area_m2 * self.aspect_ratio) ** 0.5)
 
     @property
     def induced_drag_factor(self) -> float:
@@ -140,20 +165,20 @@ class PropulsionConfig(BaseModel):
 
     # Electric-specific
     motor_kv: Annotated[
-        float | None, Field(default=None, gt=0, description="Motor Kv (RPM/V)")
-    ]
+        float | None, Field(gt=0, description="Motor Kv (RPM/V)")
+    ] = None
     battery_voltage_v: Annotated[
-        float | None, Field(default=None, gt=0, description="Battery voltage")
-    ]
+        float | None, Field(gt=0, description="Battery voltage")
+    ] = None
     battery_capacity_wh: Annotated[
-        float | None, Field(default=None, gt=0, description="Battery capacity in Wh")
-    ]
+        float | None, Field(gt=0, description="Battery capacity in Wh")
+    ] = None
     motor_efficiency: Annotated[
-        float, Field(default=0.85, gt=0, le=1.0, description="Motor efficiency")
-    ]
+        float, Field(gt=0, le=1.0, description="Motor efficiency")
+    ] = 0.85
     esc_efficiency: Annotated[
-        float, Field(default=0.95, gt=0, le=1.0, description="ESC efficiency")
-    ]
+        float, Field(gt=0, le=1.0, description="ESC efficiency")
+    ] = 0.95
 
     @property
     def total_efficiency(self) -> float:

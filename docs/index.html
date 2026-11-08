@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="VALKYRIE - Physics-aware mission intelligence for autonomous UAV systems. Enforce aerospace constraints before you build.">
-    <meta name="keywords" content="UAV, aerospace, defense, AI, autonomous systems, drone design, mission planning">
+    <meta name="description" content="VALKYRIE - Know if your drone can fly the mission before you build it. Physics-based UAV sizing with DoD UAS Group, wind and hot-and-high checks, plus an MCP server for Claude.">
+    <meta name="keywords" content="UAV, aerospace, defense, military, tactical UAS, DoD UAS groups, drone design, mission planning, MCP">
     <title>VALKYRIE - Physics-Aware Mission Intelligence</title>
     <style>
         * {
@@ -124,7 +124,7 @@
     <div class="container">
         <h1>⚡ VALKYRIE</h1>
         <p class="subtitle">Validated Aerospace Logic & Kinetic Yield Reasoning Intelligence Engine</p>
-        <p class="tagline">The only defense AI that knows what's physically possible before you build or fly it.</p>
+        <p class="tagline">Know if your drone can fly the mission before you build it.</p>
 
         <div>
             <a href="https://github.com/madhavmadupu/valkyrie-mcp" class="cta">View on GitHub</a>
@@ -133,16 +133,16 @@
 
         <div class="stats">
             <div class="stat">
-                <div class="stat-number">1,673</div>
-                <div class="stat-label">Lines of Code</div>
+                <div class="stat-number">MCP</div>
+                <div class="stat-label">Server for Claude &amp; agents</div>
             </div>
             <div class="stat">
-                <div class="stat-number">84%</div>
-                <div class="stat-label">Tests Passing</div>
+                <div class="stat-number">90%</div>
+                <div class="stat-label">Test Coverage</div>
             </div>
             <div class="stat">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">Type Safe</div>
+                <div class="stat-number">mypy</div>
+                <div class="stat-label">Strict, clean</div>
             </div>
         </div>
 
@@ -163,14 +163,18 @@
                 <h3>🔄 Iterative Sizing</h3>
                 <p>Converged design point solver with weight closure</p>
             </div>
+            <div class="feature">
+                <h3>🪖 Military Operating Checks</h3>
+                <p>DoD UAS Group classification, wind penetration, and hot-and-high field performance</p>
+            </div>
         </div>
 
         <h2 style="margin-top: 40px; color: #333;">Why VALKYRIE?</h2>
         <p style="margin: 20px 0; color: #666;">
-            Most UAVs fly by accident. Defense tech platforms can fuse intelligence (Palantir)
-            or command drones (Anduril), but none validate physics constraints before execution.
+            Most small UAVs fly by accident: sketch, CAD, pick a motor from a static thrust chart, hope.
+            VALKYRIE sizes the aircraft from the mission first, and tells you plainly when the mission is impossible.
             <br><br>
-            <strong>VALKYRIE bridges that gap.</strong>
+            <strong>Ask Claude "can this drone fly 45 minutes with a 2 lb camera?" and get a physics answer.</strong>
         </p>
 
         <footer>

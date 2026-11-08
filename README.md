@@ -6,7 +6,7 @@
 
 **Validated Aerospace Logic & Kinetic Yield Reasoning Intelligence Engine**
 
-*The only defense AI that knows what's physically possible before you build or fly it.*
+*Know if your drone can fly the mission before you build it.*
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
@@ -14,7 +14,7 @@
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 [![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](http://mypy-lang.org/)
 
-[Quick Start](#-quick-start) • [Architecture](#️-system-architecture) • [Documentation](#-documentation) • [Examples](#-examples) • [Theory](#-the-physics) • [Roadmap](#-roadmap)
+[Quick Start](#-quick-start) • [MCP](#-use-it-from-claude-mcp) • [Military Checks](#-military-operating-checks) • [Validation](#-validation) • [Docs](#-documentation) • [Roadmap](#-roadmap)
 
 </div>
 
@@ -32,45 +32,14 @@ The typical development process:
 
 In hobbyist prototyping, trial-and-error is acceptable. **In defense tech, autonomous systems, and physical AI platforms, skipping first-principles aerospace engineering destroys payload capacity, endurance margins, and program timelines before a single rib is cut.**
 
-### The Intelligence Gap
+VALKYRIE sizes a small electric fixed-wing aircraft from its mission (payload, endurance, range, field, altitude, weather), and says plainly when the mission is impossible.
 
-- **Palantir Gotham** can fuse intelligence data but can't tell you if a mission is *physically achievable* with your UAV fleet
-- **Anduril Lattice** can command autonomous assets but doesn't validate physics constraints upfront  
-- **Shield AI Hivemind** can autonomously pilot aircraft but has no view into whether the *wrong aircraft* was designed for the mission
-- **Legacy mission planners** (ATAK, Minotaur, DCGS) are 2D mapping tools with zero aerodynamic modeling
+### Who It's For
 
-**Real-world consequence:** Military operators request impossible missions. Engineers build UAVs that can't execute. *Billions wasted on platforms that "fly by accident."*
-
----
-
-## 💡 The Solution
-
-**VALKYRIE** bridges aerospace systems engineering with AI-powered mission intelligence, enforcing the laws of physics *before* you commit resources.
-
-### Core Capabilities
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  Mission Requirements (CONOPS)                              │
-│  "45min loiter, 2lb EO/IR payload, 250ft takeoff"          │
-└─────────────────┬───────────────────────────────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────────────────────────────┐
-│  VALKYRIE Physics Engine                                    │
-│  ✓ Constraint Analysis (T/W vs W/S)                        │
-│  ✓ Battery Mass Fractions (Electric UAV Sizing)            │
-│  ✓ Propulsion Modeling (Thrust Lapse w/ Velocity)          │
-│  ✓ Aerodynamic Validation (Drag Polar, L/D)                │
-└─────────────────┬───────────────────────────────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────────────────────────────┐
-│  Output: Converged Design Point                             │
-│  W₀ = 6.8kg | Wing Loading = 18 N/m² | T/W = 0.35         │
-│  ✅ VALIDATED - Mission Physically Achievable               │
-└─────────────────────────────────────────────────────────────┘
-```
+- **Defense & tactical UAS teams**: check a CONOPS against physics before a program commits: DoD UAS Group, wind penetration and hot-and-high field performance come out of every sizing run
+- **UAV builders**: RC, FPV and fixed-wing people who want to know the battery and wing size *before* the maiden flight
+- **Aerospace students**: textbook conceptual sizing (Raymer, Anderson, Mattingly) as readable, tested, validated Python
+- **Agent builders**: an MCP server, so an LLM can answer "is this mission physically possible?" with physics instead of a guess
 
 ---
 
@@ -78,249 +47,180 @@ In hobbyist prototyping, trial-and-error is acceptable. **In defense tech, auton
 
 <div align="center">
 <img src="docs/assets/architecture_diagram.png" width="100%" alt="VALKYRIE Excalidraw Dark-Mode System Architecture">
-<br><em>Excalidraw-style 3-layer system architecture: Mission CONOPS & MCP Client → VALKYRIE Core Physics & Sizing Engine → Validated Design Point</em>
+<br><em>Mission CONOPS & MCP client → VALKYRIE physics & sizing engine → validated design point</em>
 </div>
 
-> 📐 **High-Resolution Vector Diagram:** Also available as a scalable dark-mode SVG at [`docs/assets/architecture_diagram.svg`](docs/assets/architecture_diagram.svg).
+1. **Mission input**: payload, endurance and/or range (one-way or out-and-back), field elevation, cruise altitude, temperature, wind, stall speed; from Python or an LLM over MCP.
+2. **Physics engine**: constraint analysis (T/W vs W/S), parabolic drag polar, battery energy budget for climb, transit (with wind) and loiter, iterative weight closure.
+3. **Validated design point**: weight, wing, thrust, battery, DoD UAS Group and every failed check, or the physical reason the mission can't be flown.
 
-### Architecture Layers
-
-1. **Layer 1 — Mission Input & AI Interface (`CONOPS` / `MCP Client`)**: Accepts tactical mission parameters (payload mass, endurance, takeoff ground roll, cruise altitude) directly from Python or an LLM agent via the Model Context Protocol (MCP).
-2. **Layer 2 — VALKYRIE Core Physics Engine**:
-   - **Constraint Analyzer**: Solves simultaneous point-performance inequalities ($T/W$ vs. $W/S$) across takeoff, climb, cruise, and stall limits.
-   - **First-Principles Physics Engine**: Couples parabolic drag polar aerodynamics ($C_D = C_{D,0} + k C_L^2$), dynamic propeller thrust lapse ($T(V) = \eta_p P / V$), and electric battery mass fractions ($BMF$).
-   - **Iterative Sizing Loop**: Converges Gross Takeoff Weight ($W_0$) against historical empty-weight regressions ($W_e/W_0$) and COTS component databases.
-3. **Layer 3 — Validated Design Point & Hardware Synthesis**: Outputs a converged, physically realizable aircraft configuration ready for COTS motor/battery/propeller matching and CAD geometry generation.
-
-### What Makes VALKYRIE Different
-
-| Feature | Palantir | Anduril Lattice | Shield AI | **VALKYRIE** |
-|---------|----------|-----------------|-----------|--------------|
-| Intelligence Fusion | ✅ | ⚠️ Basic | ❌ | 🎯 Phase 2 |
-| Autonomous C2 | ❌ | ✅ | ⚠️ Piloting | 🎯 Phase 2 |
-| **Physics Constraint Validation** | ❌ | ❌ | ❌ | ✅ **ONLY ONE** |
-| **Aerospace Systems Engineering** | ❌ | ❌ | ❌ | ✅ **ONLY ONE** |
-| **Design-to-Mission Synthesis** | ❌ | ❌ | ❌ | ✅ **ONLY ONE** |
-| Real Component Databases | ❌ | ❌ | ❌ | ✅ |
+How each step works, with equations and sources: **[docs/theory.md](docs/theory.md)**.
 
 ---
 
 ## 🚀 Quick Start
 
-### Installation
-
 ```bash
-# Clone the repository
 git clone https://github.com/madhavmadupu/valkyrie-mcp.git
 cd valkyrie-mcp
-
-# Create virtual environment (Python 3.12+)
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install with all dependencies
-pip install -e ".[all]"
+python -m venv venv && source venv/bin/activate   # Windows: venv\Scripts\activate
+pip install -e .
 ```
-
-### Your First Mission Analysis
 
 ```python
 from valkyrie import MissionRequirements, ConstraintAnalyzer
 
-# Define tactical ISR mission
 mission = MissionRequirements(
     payload_mass_kg=0.91,        # 2.0 lb EO/IR camera
     endurance_hours=0.75,        # 45 minutes on station
     takeoff_distance_m=76,       # 250 ft grass field
-    cruise_altitude_m=300,       # Low-altitude surveillance
+    cruise_altitude_m=300,       # low-altitude surveillance
 )
+design = ConstraintAnalyzer(mission).solve()
 
-# Run physics validation
-analyzer = ConstraintAnalyzer(mission)
-design_point = analyzer.solve()
-
-print(f"✅ Mission Validated!")
-print(f"Required GTOW: {design_point.gross_weight_kg:.2f} kg")
-print(f"Wing Area: {design_point.wing_area_m2:.2f} m²")
-print(f"Required Thrust: {design_point.thrust_n:.2f} N")
-print(f"Battery Mass: {design_point.battery_mass_kg:.2f} kg")
+print(f"Gross weight:  {design.gross_weight_kg:.2f} kg")
+print(f"Wing area:     {design.wing_area_m2:.3f} m²")
+print(f"Thrust:        {design.required_thrust_n:.2f} N")
+print(f"Battery:       {design.battery_mass_kg:.3f} kg")
 ```
 
-**Output:**
 ```
-✅ Mission Validated!
-Required GTOW: 6.82 kg
-Wing Area: 0.38 m²
-Required Thrust: 23.4 N
-Battery Mass: 2.15 kg (31.5% of GTOW)
+Gross weight:  2.31 kg
+Wing area:     0.183 m²
+Thrust:        6.18 N
+Battery:       0.243 kg
 ```
 
----
-
-## 📚 The Physics
-
-VALKYRIE implements rigorous aerospace engineering methodology from:
-- **John D. Anderson Jr.** - *Aircraft Performance and Design*
-- **Daniel P. Raymer** - *Aircraft Design: A Conceptual Approach*  
-- **Jack D. Mattingly** - *Aircraft Engineering Principles*
-
-### Core Equations
-
-#### **Constraint Analysis**
-Every point-performance requirement (takeoff, climb, cruise, turn) becomes an inequality relating **Thrust-to-Weight (T/W)** to **Wing Loading (W/S)**:
-
-```
-Takeoff:  T/W ≥ (W/S) / (ρ g CL,max TOP)
-Climb:    T/W ≥ (W/S)(2k/ρV²) + (ρV²CD,0)/(2W/S) + (1/V)(dh/dt)
-Cruise:   T/W ≥ (W/S)(k/q) + (q·CD,0)/(W/S)
-```
-
-The **feasible design space** is the intersection of all constraints.
-
-#### **Battery Mass Fractions (Electric UAV)**
-Unlike fuel-burning aircraft (Breguet equations), electric UAVs maintain constant weight. Total battery mass fraction:
-
-```
-BMF_total = (E·V·g) / (3.6·Esb·ηtotal·(L/D))
-```
-
-Where:
-- `E` = Endurance (hours)  
-- `V` = Airspeed (m/s)
-- `Esb` = Battery specific energy (Wh/kg)
-- `ηtotal` = Propulsive efficiency chain
-- `L/D` = Lift-to-drag ratio
-
-**Critical insight:** Improving aerodynamic efficiency `(L/D)` directly slashes required battery mass.
-
-#### **Propeller Thrust Lapse**
-Static thrust exists only at `V=0`. As airspeed increases, thrust decays:
-
-```
-T(V) = (ηp · Pshaft) / V
-```
-
-**Never size an airframe using a motor manufacturer's static thrust chart** — it's wrong the moment the aircraft releases brakes.
-
-> 📖 **Full theory documentation:** [docs/theory/aerospace-fundamentals.md](docs/theory/aerospace-fundamentals.md)
-
----
-
-## 🎮 Examples
-
-### 1. **Constraint Diagram Visualization**
-```python
-from valkyrie import plot_constraint_space
-
-analyzer.plot_constraint_diagram(
-    save_path="constraint_space.png"
-)
-```
-
-<div align="center">
-<img src="docs/assets/constraint_diagram_example.png" width="600" alt="Constraint Analysis">
-<br><em>T/W vs W/S design space showing feasible region</em>
-</div>
-
-### 2. **Component Database Query**
-```python
-from valkyrie.components import MotorDatabase
-
-# Find motors that can provide 25N thrust
-motors = MotorDatabase.query(
-    min_thrust_n=25,
-    max_mass_kg=0.5,
-    voltage=22.2  # 6S LiPo
-)
-
-for motor in motors:
-    print(f"{motor.name}: {motor.max_thrust_n}N @ {motor.kv}Kv")
-```
-
-### 3. **Real-World UAV Validation**
-Validate against the **RQ-11 Raven** (US Army tactical UAV):
+Impossible missions fail loudly instead of returning a fantasy aircraft:
 
 ```python
-from valkyrie.examples import validate_rq11_raven
-
-report = validate_rq11_raven()
-# Compares VALKYRIE predictions against actual flight data
+MissionRequirements(payload_mass_kg=10, endurance_hours=10, takeoff_distance_m=50, cruise_altitude_m=5000)
+# ConvergenceError: Sum of fractions exceeds 1.0: We/W0=0.500, BMF=1.793.
 ```
 
-> 🎯 **Interactive Jupyter Notebooks:** [examples/notebooks/](examples/notebooks/)
+All mission inputs, outputs and a full walkthrough: **[docs/getting-started.md](docs/getting-started.md)**.
 
 ---
 
-## 🗺️ Roadmap
+## 🤖 Use it from Claude (MCP)
 
-### ✅ Phase 1: Physics Validator (Current - v0.1.0)
-- [x] Constraint analysis solver (T/W vs W/S)
-- [x] Battery mass fraction calculator  
-- [x] Propeller thrust lapse modeling
-- [x] Mission segment analyzer
-- [x] COTS component database (motors, batteries, propellers)
-- [x] MCP server with 15+ tools
-- [ ] **Target: 90%+ test coverage**
+```bash
+pip install -e .
+claude mcp add valkyrie -- valkyrie-mcp       # Claude Code
+```
 
-### 🎯 Phase 2: Mission-Fleet Optimizer (Q2 2025 - v0.2.0)
-- [ ] Fleet capability database
-- [ ] Multi-aircraft mission allocation
-- [ ] Physics-aware path planning
-- [ ] Weather impact modeling
-- [ ] Threat environment integration
+Claude Desktop (`claude_desktop_config.json`):
 
-### 🚀 Phase 3: Multi-INT Fusion Platform (Q3 2025 - v1.0.0)
-- [ ] Intelligence data fusion (SIGINT, IMINT, OSINT)
-- [ ] Entity tracking & pattern-of-life
-- [ ] AI-powered mission re-tasking
-- [ ] Knowledge graph (Threats ↔ Missions ↔ Platforms)
-- [ ] Integration with Palantir/Lattice ecosystems
+```json
+{ "mcpServers": { "valkyrie": { "command": "valkyrie-mcp" } } }
+```
 
-**Vision:** The only platform that understands both *intelligence* AND *physics*.
+Then ask: *"Can a fixed-wing drone carry a 2 lb camera for 45 minutes and take off in 250 ft?"*
+or *"Same mission from a 6,000 ft strip at 45 °C in 15 m/s wind: what DoD group, and does it still work?"*
+
+| Tool | What it does |
+|------|--------------|
+| `size_uav` | Sizes the aircraft for payload + endurance and/or range (one-way or round trip), wind, temperature and field elevation; returns the design, DoD UAS Group and failed checks, or `feasible: false` with the physical reason |
+| `find_components` | Looks up motors, batteries and propellers from the built-in COTS database |
+
+Works with `mcp` 1.x and 2.x.
 
 ---
 
-## 🛠️ Technology Stack
+## 🪖 Military Operating Checks
 
-- **Python 3.12+** (Modern type hints, performance)
-- **MCP SDK** (Model Context Protocol - integrate with Claude, custom LLMs)
-- **Pydantic v2** (Data validation, type safety)
-- **NumPy/SciPy** (Numerical computation, optimization)
-- **pytest + mypy + ruff** (90%+ coverage, strict typing, linting)
+| Check | What it does |
+|-------|-----------------|
+| **DoD UAS Group (1–5)** | Classifies the design by weight, altitude (AGL/MSL) and airspeed; the highest attribute wins, per the DoD group table |
+| **Wind penetration** | Error if cruise airspeed can't beat the required wind (blown off station); warning if upwind ground speed drops below half airspeed |
+| **Wind in the energy budget** | Transit is flown at the energy-optimal airspeed with the wind along the track: headwind on a one-way leg, headwind out and tailwind home on a round trip. A 50 km one-way leg needs 0.71 kg of battery in still air, 2.03 kg into 10 m/s |
+| **Hot and high** | Design-day temperature and field elevation lower air density: the stall-limited wing grows and takeoff needs more thrust. 45 °C at an 1,800 m strip: wing +32% |
+
+```python
+from valkyrie.analysis import DesignValidator
+
+mission = MissionRequirements(
+    payload_mass_kg=0.91, endurance_hours=0.75, takeoff_distance_m=76,
+    field_elevation_m=1800, cruise_altitude_m=2100,   # high-altitude strip
+    temperature_celsius=45, max_wind_speed_ms=15,      # hot day, gusty
+)
+design = ConstraintAnalyzer(mission).solve()
+validator = DesignValidator(mission, design)
+validator.validate_all()
+print(validator.uas_group(), validator.summary())      # 1, wind_penetration_marginal warning
+```
+
+Details and thresholds: **[docs/theory.md § Military operating checks](docs/theory.md#7-military-operating-checks)**.
 
 ---
 
-## 🤝 Contributing
+## 🔬 Validation
 
-We welcome contributions from aerospace engineers, defense tech developers, and autonomy researchers!
+Tests prove the code is self-consistent; validation checks it against **outside evidence**. Full report with figures: **[docs/validation.md](docs/validation.md)** (regenerated by `validation/run_validation.py`).
 
-**Good First Issues:**
-- Add propeller database entries (APC, Master Airscrew)
-- Implement historical empty-weight regression models
-- Create example UAV designs (FPV racing drones, agricultural platforms)
+| Model piece | Checked against | Result |
+|---|---|---|
+| Air density | U.S. Standard Atmosphere 1976 | max error 0.001% to 11 km |
+| Parabolic drag polar | Skywalker X8 measured aerodynamic model | (L/D)max within 0.8% |
+| Default drag (CD0 0.025, e 0.80) | X8 measured model / AeroSandbox Raven-class buildup | 5% / 10% *conservative* |
+| Propeller efficiency 0.70 | UIUC wind tunnel, APC 11–16 in props | measured peaks 0.68–0.79 |
+| Battery energy budget | Independent time-stepping simulator | within 0.11% on 4 missions |
+| "Along-track wind is worst case" | Simulator, 0–180° wind sweep | confirmed |
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Validation changed the model: the propeller efficiency default dropped from 0.80 to 0.70 after the UIUC data, and climb energy was added after the simulator exposed it. **Not yet validated:** end-to-end endurance against a real flight log (we need one, see [CONTRIBUTING.md](CONTRIBUTING.md)).
 
 ---
 
 ## 📖 Documentation
 
-- **[Architecture Overview](docs/architecture.md)** - System design & data flow
-- **[Theory Deep-Dive](docs/theory/)** - Aerospace engineering fundamentals  
-- **[API Reference](https://madhavmadupu.github.io/valkyrie-mcp/api/)** - Auto-generated from docstrings
-- **[Integration Guide](docs/integration-guide.md)** - Use with Claude, custom agents
+| Doc | What's in it |
+|---|---|
+| [Getting started](docs/getting-started.md) | Install, every mission input, reading the outputs, MCP setup, simulation |
+| [Theory](docs/theory.md) | Every equation, every default and where it comes from |
+| [Validation](docs/validation.md) | Evidence against standards, wind-tunnel data and independent tools |
+| [References](docs/references.md) | Books, papers and datasets |
+| [Worked example](examples/designs/tactical_field_uav/) | 2 lb-payload, 45-minute ISR UAV from requirements to design |
+
+---
+
+## 🗺️ Roadmap
+
+### ✅ Done (v0.1.x)
+- [x] Constraint analysis (T/W vs W/S) with stall/landing-limited wing loading
+- [x] Battery energy budget: climb, transit (one-way and out-and-back, with wind), loiter
+- [x] Military operating checks: DoD UAS Group, wind penetration, hot-and-high
+- [x] Time-stepping mission simulator
+- [x] Validation suite against USSA-1976, Skywalker X8, UIUC propeller data, AeroSandbox
+- [x] MCP server (`size_uav`, `find_components`)
+
+### 🎯 Next (v0.2.0)
+- [ ] End-to-end validation against a real flight log
+- [ ] Empty-weight model that scales with size and wing area (replaces the fixed 50% fraction)
+- [ ] Battery reserve, Peukert effect, payload + avionics power draw
+- [ ] Motor power sizing (P = T·V/η) wired to the component database
+- [ ] Max dash speed sizing, so the DoD group and wind checks use dash speed, not cruise
+- [ ] Plotted constraint diagram generated from the solver
+- [ ] Hybrid / ICE propulsion (Group 2–3 aircraft); currently rejected with a clear error
+
+**Vision:** No one should have to maiden-fly an aircraft to find out whether its mission was possible.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from aerospace engineers, defense tech developers, and autonomy researchers. The most valuable one right now is **a flight log** (mass, wing area, battery energy used, airspeed, wind) to validate endurance end to end.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
 ## 📜 Citation
 
-If you use VALKYRIE in research or commercial work, please cite:
-
 ```bibtex
 @software{valkyrie_mcp,
   author = {Madupu, Madhav},
   title = {VALKYRIE: Validated Aerospace Logic \& Kinetic Yield Reasoning Intelligence Engine},
-  year = {2025},
+  year = {2026},
   url = {https://github.com/madhavmadupu/valkyrie-mcp},
   note = {Physics-aware mission intelligence for autonomous systems}
 }
@@ -328,9 +228,7 @@ If you use VALKYRIE in research or commercial work, please cite:
 
 ---
 
-## 🌟 Why This Matters
-
-### From the Author
+## 🌟 From the Author
 
 > "I've watched defense tech startups waste months building UAVs that couldn't meet their stated endurance requirements. I've seen military operators request missions that violated basic aerodynamics. Intelligence platforms fuse data brilliantly but can't answer: *'Is this even possible?'*
 >
@@ -338,21 +236,11 @@ If you use VALKYRIE in research or commercial work, please cite:
 >
 > — **Madhav Madupu**, Aerospace Systems Engineer
 
-### Beyond Hobby Prototyping
-
-- **Anduril raised $30.5B valuation** on autonomous systems  
-- **Shield AI raised $2.8B valuation** on AI pilots
-- **Palantir trades at $70B+ market cap** on intelligence fusion
-
-The next unicorn will bridge all three: *autonomy, intelligence, and physics-first engineering.*
-
 ---
 
 ## ⚖️ License
 
 Apache License 2.0 - See [LICENSE](LICENSE) for details.
-
----
 
 ## 🔗 Links
 

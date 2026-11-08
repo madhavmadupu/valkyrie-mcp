@@ -3,7 +3,7 @@
 import math
 from dataclasses import dataclass
 
-from valkyrie.core.constants import GRAVITY, air_density
+from valkyrie.core.constants import air_density
 
 
 @dataclass
@@ -14,7 +14,7 @@ class DragPolar:
     Valid for subsonic, attached flow conditions.
 
     Reference:
-        Anderson, J.D. "Aircraft Performance and Design", Ch. 5
+        Anderson, J.D. "Aircraft Performance and Design", McGraw-Hill, 1999, Ch. 2 and 5
         Raymer, D.P. "Aircraft Design: A Conceptual Approach", Ch. 12
     """
 

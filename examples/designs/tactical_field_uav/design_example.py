@@ -11,8 +11,8 @@ from valkyrie.core.constants import GRAVITY
 def main():
     """Run complete design analysis."""
     # Set UTF-8 encoding for Windows console
-    import sys
     import io
+    import sys
     if sys.platform == 'win32':
         sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -46,7 +46,6 @@ def main():
         cd0=0.025,  # Zero-lift drag coefficient
         oswald_efficiency=0.80,  # Span efficiency
         aspect_ratio=8.0,  # Wing aspect ratio
-        cl_max_takeoff=1.8,  # Max lift coefficient
     )
 
     print("  Generating T/W vs W/S constraint diagram...")
@@ -62,7 +61,7 @@ def main():
     print("  Solving for converged gross weight...")
     design_point = analyzer.solve()
 
-    print(f"  ✓ Converged in sizing iterations")
+    print("  ✓ Converged in sizing iterations")
 
     # Step 4: Final Design Point
     print("\n✅ STEP 4: Final Design Point")
@@ -89,18 +88,17 @@ def main():
     print("\n📊 STEP 5: Performance Estimates")
     print("-" * 70)
 
-    from valkyrie.physics.aerodynamics import DragPolar, compute_stall_speed
-
     # Drag polar
     import math
-    k = 1.0 / (math.pi * 0.80 * 8.0)
-    polar = DragPolar(cd0=0.025, k=k)
+
+    from valkyrie.physics.aerodynamics import DragPolar, compute_stall_speed
+    polar = DragPolar(cd0=analyzer.cd0, k=analyzer.k)
 
     # Stall speed
     v_stall = compute_stall_speed(
         wing_area_m2=design_point.wing_area_m2,
         weight_n=design_point.gross_weight_kg * GRAVITY,
-        cl_max=1.8,
+        cl_max=analyzer.cl_max_landing,
         altitude_m=0,
     )
 
